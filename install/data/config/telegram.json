@@ -1,0 +1,6 @@
+{
+    "bot_token": "<TELEGRAM_BOT_TOKEN>",
+    "bot_id": 1,
+    "log_chat_id": 1,
+    "admin_chat_id": 1
+}
