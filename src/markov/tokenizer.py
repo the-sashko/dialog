@@ -1,65 +1,72 @@
 import json
-from markov import store, dictionary
+from markov import dictionary
+from storage.storage import Storage
 
 #to-do: refactoring code syle
 #to-do: add logs
 class Tokenizer():
     __dictionary = None
-    __store = None
+    __storage = None
 
     def __init__(self):
         self.__dictionary = dictionary.Dictionary()
-        self.__store = store.Store()
+        self.__storage = Storage()
 
-    def getTokenizedText(self, text: str) -> list:
-        tokenizedText = text.split(' ')
+    def get_tokenized_text(self, text: str) -> list:
+        tokenized_text = text.split(' ')
 
-        for tokenIndex, token in enumerate(tokenizedText) :
-            tokenizedText[tokenIndex] = self.__dictionary.getIdByWord(token)
+        for token_index, token in enumerate(tokenized_text) :
+            tokenized_text[token_index] = self.__dictionary.get_id_by_word(token)
 
-        return tokenizedText
+        return tokenized_text
 
-    def makeChunkedText(self, tokenizedText: list, chunkLength: int) -> list:
-        chunkedText = {}
+    def make_chunked_text(
+        self,
+        tokenized_text: list,
+        chunk_length: int
+    ) -> list:
+        chunked_text = {}
 
-        chunksCount = 0
-        newChunksCount = 0
+        chunks_count = 0
+        new_chunks_count = 0
 
-        for chunk in self.__getChunks(tokenizedText, chunkLength):
-            if chunk[0] in chunkedText.keys():
-                chunkedText[chunk[0]].append(chunk[1])
+        for chunk in self.__get_chunks(tokenized_text, chunk_length):
+            if chunk[0] in chunked_text.keys():
+                chunked_text[chunk[0]].append(chunk[1])
             else:
-                chunkedText[chunk[0]] = [chunk[1]]
+                chunked_text[chunk[0]] = [chunk[1]]
 
-        for chunkId in chunkedText:
-            chunkValue = chunkedText[chunkId]
-            chunkValueFromStore = self.__store.getValueFromCunksById(chunkId)
+        for chunk_id in chunked_text:
+            chunk_value = chunked_text[chunk_id]
 
-            if chunkValueFromStore == None :
-                self.__store.insertRowToChunks(chunkId, json.dumps(chunkValue))
-                newChunksCount += 1
+            chunk_value_from_store = self.__storage.get_value_from_chunks_by_id(
+                chunk_id
+            )
+
+            if chunk_value_from_store is None :
+                self.__storage.insert_row_to_chunks(chunk_id, json.dumps(chunk_value))
+                new_chunks_count += 1
             else:
-                chunkValue = chunkValue + json.loads(chunkValueFromStore)
-                self.__store.updateChunksById(chunkId, json.dumps(chunkValue))
+                chunk_value = chunk_value + json.loads(chunk_value_from_store)
+                self.__storage.update_chunks_by_id(chunk_id, json.dumps(chunk_value))
 
-            chunksCount += 1
+            chunks_count += 1
 
-        return (chunksCount, newChunksCount)
+        return (chunks_count, new_chunks_count)
 
-
-    def __getChunks(self, tokens, length) -> dict:
+    def __get_chunks(self, tokens, length) -> dict:
         for i in range(len(tokens) - (length -1)) :
             chunk = {}
             for j in range(length) :
                 chunk[j] = str(tokens[i + j])
 
-            chunkValue = chunk[len(chunk) - 1]
+            chunk_value = chunk[len(chunk) - 1]
 
             del chunk[len(chunk) - 1]
 
-            chunkId = ';'.join(chunk.values())
+            chunk_id = ';'.join(chunk.values())
 
             yield {
-                0: chunkId,
-                1: int(chunkValue)
+                0: chunk_id,
+                1: int(chunk_value)
             }

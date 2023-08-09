@@ -2,7 +2,6 @@ from typing import Union
 
 from script.sctript import Script
 
-#to-do: refactoring code syle
 #to-do: add logs
 class Trigger:
     __script = None
@@ -51,7 +50,7 @@ class Trigger:
     ) -> bool:
         #To-Do
         return False
-    
+
     def __is_about_me(
         self,
         data: Union[dict, None] = None

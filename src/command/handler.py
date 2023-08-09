@@ -89,7 +89,7 @@ class Handler:
         self.__logger.log('End generating voice message')
 
         self.__logger.log('Start sending voice message')
-        self.__telegram.sendVoice(
+        self.__telegram.send_voice(
             message.get_chat().get_id(),
             audio_file_path,
             reply_to_message_id

@@ -7,8 +7,8 @@ from typing import Union
 from markov.dictionary import Dictionary
 from markov.formatter import Formatter
 from markov.tokenizer import Tokenizer
-from markov.store import Store
 from logger.logger import Logger
+from storage.storage import Storage
 
 #to-do: refactoring code syle
 #to-do: add logs
@@ -24,179 +24,200 @@ class Markov():
     __dictionary = None
     __formatter = None
     __tokenizer = None
-    __store = None
+    __storage = None
     __logger = None
 
     def __init__(self):
         self.__dictionary = Dictionary()
         self.__formatter = Formatter()
         self.__tokenizer = Tokenizer()
-        self.__store = Store()
+        self.__storage = Storage()
         self.__logger = Logger()
 
-    def getReply(self, text: str) -> Union[str, None]:
-        self.__logger.log('Start Creating Markov Chain')
+    def get_reply(self, text: str) -> Union[str, None]:
+        self.__logger.log('Start creating markov chain')
 
-        tokenizedText = self.__getChainByText(text)
+        tokenized_text = self.__get_chain_by_text(text)
 
-        if tokenizedText == None:
-            self.__logger.log('End Creating Markov Chain With 0 Tokens')
+        if tokenized_text == None:
+            self.__logger.log('End creating markov chain with 0 tokens')
             return None
 
-        self.__logger.log('End Creating Markov Chain With ' + str(len(tokenizedText)) + ' Tokens')
+        self.__logger.log('End creating markov chain with ' + str(len(tokenized_text)) + ' tokens')
 
-        self.__logger.log('Start Translating Tokens')
+        self.__logger.log('Start translating tokens')
 
-        for tokenIndex, token in enumerate(tokenizedText) :
-            if token == self.__dictionary.getStartId() :
-                tokenizedText[tokenIndex] = ''
-    
-            if token == self.__dictionary.getEndId() :
-                tokenizedText[tokenIndex] = '.'
+        for token_index, token in enumerate(tokenized_text) :
+            if token == self.__dictionary.get_start_id() :
+                tokenized_text[token_index] = ''
 
-            if token == self.__dictionary.getStopId() :
-                tokenizedText[tokenIndex] = self.__dictionary.stop
+            if token == self.__dictionary.get_end_id() :
+                tokenized_text[token_index] = '.'
 
-            if token != self.__dictionary.getStartId() and token != self.__dictionary.getEndId() and token != self.__dictionary.getStopId() :
-                tokenizedText[tokenIndex] = self.__dictionary.getWordById(token)
+            if token == self.__dictionary.get_stop_id() :
+                tokenized_text[token_index] = self.__dictionary.stop
 
-        self.__logger.log('End Translating Tokens')
+            if token != self.__dictionary.get_start_id() and token != self.__dictionary.get_end_id() and token != self.__dictionary.get_stop_id() :
+                tokenized_text[token_index] = self.__dictionary.get_word_by_id(token)
 
-        self.__logger.log('Start Formatting Output Text')
+        self.__logger.log('End translating tokens')
 
-        text = self.__formatter.getFormattedTokenizedText(tokenizedText)
+        self.__logger.log('Start formatting output text')
+
+        text = self.__formatter.get_formatted_tokenized_text(tokenized_text)
 
         text = text.split('?')
-        
+
         if len(text) > 1:
             text = text[0] + '?'
         else:
             text = text[0]
 
-        self.__logger.log('End Formatting Output Text')
+        self.__logger.log('End formatting output text')
 
         return text
 
     def do_parse(self):
         try:
-            rawFilePath = self.__SOURCE_FILE_PATH % os.getcwd()
+            raw_file_path = self.__SOURCE_FILE_PATH % os.getcwd()
 
-            if not os.path.isfile(rawFilePath):
-                self.__logger.log('Start Merging Sources')
+            if not os.path.isfile(raw_file_path):
+                self.__logger.log('Start merging sources')
                 self.__merge_sources()
-                self.__logger.log('End Merging Sources')
+                self.__logger.log('End merging sources')
 
-            if not os.path.isfile(rawFilePath):
-                self.__logger.log('File With RAW Data Is Not Exists')
+            if not os.path.isfile(raw_file_path):
+                self.__logger.log('File with raw data is not exists')
 
                 return False
 
-            self.__logger.log('Start Parsing Text')
+            self.__logger.log('Start parsing text')
 
-            self.__logger.log('Start Formatting Raw Text')
-            
+            self.__logger.log('Start formatting raw Ttxt')            
 
-            rawFilePath = self.__SOURCE_FILE_PATH % os.getcwd()
-            rawFile = open(rawFilePath, 'r')
-            rawText = rawFile.read()
+            raw_file = open(raw_file_path, 'r')
+            raw_text = raw_file.read()
 
-            formattedText = self.__formatter.getFormattedRawText(
-                rawText
+            formatted_text = self.__formatter.get_formatted_raw_text(
+                raw_text
             )
 
-            self.__logger.log('End Formatting Raw Text')
+            self.__logger.log('End formatting raw text')
 
-            self.__logger.log('Start Tokenizing Text')
-            tokenizedText = self.__tokenizer.getTokenizedText(formattedText)
-            self.__logger.log('End Tokenizing Text')
+            self.__logger.log('Start tokenizing text')
 
-            chunkLength = self.__MIN_CHUNK_LENGTH
+            tokenized_text = self.__tokenizer.get_tokenized_text(
+                formatted_text
+            )
 
-            while chunkLength <= self.__MAX_CHUNK_LENGTH:
-                self.__logger.log('Start Splitting Text On Chunks (Length ' +
-                    str(chunkLength) + ')')
+            self.__logger.log('End tokenizing text')
 
-                chunkCounts = self.__tokenizer.makeChunkedText(
-                    tokenizedText,
-                    chunkLength
+            chunk_length = self.__MIN_CHUNK_LENGTH
+
+            while chunk_length <= self.__MAX_CHUNK_LENGTH:
+                self.__logger.log(
+                    'Start splitting text on chunks (length %s )' % str(chunk_length)
                 )
 
-                self.__logger.log('End Splitting Text On ' +
-                    str(chunkCounts[0]) + ' Chunks (' + 
-                    str(chunkCounts[1]) + ' Chunks Is New)')
+                chunk_counts = self.__tokenizer.make_chunked_text(
+                    tokenized_text,
+                    chunk_length
+                )
 
-                chunkLength += 1
+                self.__logger.log(
+                    'End splitting text on %s chunks (%s chunks is New)' % (str(chunk_counts[0]), str(chunk_counts[1]))
+                )
 
-            rawFilePath = self.__SOURCE_FILE_PATH % os.getcwd()
+                chunk_length += 1
 
-            os.remove(rawFilePath)
-            self.__logger.log('End Parsing Text')
+            raw_file_path = self.__SOURCE_FILE_PATH % os.getcwd()
+
+            os.remove(raw_file_path)
+
+            self.__logger.log('End parsing text')
         except Exception as exp:
             self.__logger.log_error(exp)
 
-    def __getChainByText(self, text: str) -> list:
-        formattedText = self.__formatter.getFormattedRawText(text)
-        tokenizedText = self.__tokenizer.getTokenizedText(formattedText)
-        tokenizedText.append(self.__dictionary.getStopId())
-        tokenizedText.append(self.__dictionary.getStartId())
+    def __get_chain_by_text(self, text: str) -> list:
+        formatted_text = self.__formatter.get_formatted_raw_text(text)
+        formatted_text = self.__tokenizer.get_tokenized_text(formatted_text)
+        formatted_text.append(self.__dictionary.get_stop_id())
+        formatted_text.append(self.__dictionary.get_start_id())
 
-        return self.__getChainByTokenizedText(tokenizedText, [], 0)
+        return self.__get_chain_by_tokenized_text(formatted_text, [], 0)
 
-    def __getChunkById(self, id: str) -> Union[list, None]:
-        chunk = self.__store.getValueFromCunksById(id)
+    def __get_chunk_by_id(self, id: str) -> Union[list, None]:
+        chunk = self.__storage.get_value_from_chunks_by_id(id)
 
         if chunk == None:
             return None
 
         return json.loads(chunk)
 
-    def __getChainByTokenizedText(self, tokenizedText: list, chain: list, sentenceCount: int) -> Union[list, None]:
-        chunk = self.__getChunkByTokenizedText(tokenizedText)
+    def __get_chain_by_tokenized_text(
+        self,
+        tokenized_text: list,
+        chain: list,
+        sentence_count: int
+    ) -> Union[list, None]:
+        chunk = self.__get_chunk_by_tokenized_text(
+            tokenized_text
+        )
 
         if chunk == None and len(chain) == 0:
             return None
 
-        if chunk == None and len(tokenizedText) > 1:
-            del tokenizedText[0]
+        if chunk == None and len(tokenized_text) > 1:
+            del tokenized_text[0]
 
-            return self.__getChainByTokenizedText(tokenizedText, chain, sentenceCount)
+            return self.__get_chain_by_tokenized_text(
+                tokenized_text,
+                chain,
+                sentence_count
+            )
 
         if chunk == None:
             return chain
 
         token = int(numpy.random.choice(chunk))
 
-        if token == self.__dictionary.getEndId() :
-            sentenceCount += 1
+        if token == self.__dictionary.get_end_id() :
+            sentence_count += 1
 
         chain.append(token)
-        tokenizedText.append(token)
+        tokenized_text.append(token)
 
-        if sentenceCount >= self.__MAX_SENTENTCES_COUNT :
+        if sentence_count >= self.__MAX_SENTENTCES_COUNT :
             return chain
 
-        return self.__getChainByTokenizedText(tokenizedText, chain, sentenceCount)
+        return self.__get_chain_by_tokenized_text(
+            tokenized_text,
+            chain,
+            sentence_count
+        )
 
+    def __get_chunk_by_tokenized_text(
+        self,
+        tokenized_text: str
+    ) -> Union[list, None]:
+        chunk_id = []
 
-    def __getChunkByTokenizedText(self, tokenizedText: str) -> Union[list, None]:
-        chunkId = []
+        for token in tokenized_text:
+            chunk_id.append(str(token))
 
-        for token in tokenizedText:
-            chunkId.append(str(token))
+        chunk_id = ';'.join(chunk_id)
 
-        chunkId = ';'.join(chunkId)
-
-        chunk = self.__getChunkById(chunkId)
+        chunk = self.__get_chunk_by_id(chunk_id)
 
         return chunk
 
-    def __merge_sources(self) -> None :
+    def __merge_sources(self) -> None:
         result_file = self.__SOURCE_FILE_PATH % os.getcwd()
         
         source_files = [f for f in os.listdir(self.__SOURCE_DIR_PATH % os.getcwd()) if f.endswith('.txt')]
 
-        with open(result_file, 'w') as outfile:
+        with open(result_file, 'w') as output_file:
             for source_file in source_files:
-                with open(os.path.join(self.__SOURCE_DIR_PATH % os.getcwd(), source_file), 'r') as infile:
-                    outfile.write(infile.read())
-                    outfile.write('\n')
+                with open(os.path.join(self.__SOURCE_DIR_PATH % os.getcwd(), source_file), 'r') as input_file:
+                    output_file.write(input_file.read())
+                    output_file.write('\n')

@@ -2,7 +2,6 @@ import openai
 from typing import Union
 from settings.settings import Settings
 
-#to-do: refactoring code syle
 #to-do: add logs
 class Transcription:
     __WHISPER_1_MODEL = 'whisper-1'

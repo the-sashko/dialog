@@ -117,7 +117,7 @@ class Handler:
         if self.__is_reply_in_audio(message):
             audio_file_path = self.__tts.text2audio(reply)
 
-            self.__telegram.sendVoice(
+            self.__telegram.send_voice(
                 message.get_chat().get_id(),
                 audio_file_path,
                 reply_to_message_id
@@ -139,7 +139,7 @@ class Handler:
         if message.get_text() is None:
             return None
 
-        reply = self.__markov.getReply(message.get_text())
+        reply = self.__markov.get_reply(message.get_text())
 
         if reply is None:
             return self.__gpt.get_reply(message, mood)

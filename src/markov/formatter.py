@@ -10,73 +10,73 @@ class Formatter():
     def __init__(self):
         self.__dictionary = dictionary.Dictionary()
 
-    def getFormattedRawText(self, rawText: str) -> str:
-        formattedText = re.sub(r'([\w]+)', r' \g<1> ', rawText)
-        formattedText = re.sub(r'\n+', '<br>', formattedText)
-        formattedText = re.sub(r'\s+', ' ', formattedText)
-        formattedText = re.sub(r'((^\s)|(\s$))', '', formattedText)
-        formattedText = re.sub(r'((\s\.)|(\.\s))', '.', formattedText)
-        formattedText = formattedText.replace('...', ' … ')
-        formattedText = re.sub(r'[\.]+', '.', formattedText)
-        formattedText = re.sub(r'((^\.)|(\.$))', '', formattedText)
-        formattedText = formattedText.lower()
-        formattedText = formattedText.replace('’', '\'')
-        formattedText = self.__dictionary.start + ' ' + formattedText + ' ' + self.__dictionary.end
-        formattedText = formattedText.replace('.', ' ' + self.__dictionary.end + ' ' + self.__dictionary.start + ' ')
-        formattedText = re.sub(r'\s+', ' ', formattedText)
-        formattedText = re.sub(r'((^\s)|(\s$))', '', formattedText)
-        formattedText = formattedText.replace(' \' ', '\'')
-        formattedText = formattedText.replace('”', '"')
-        formattedText = formattedText.replace('“', '"')
-        formattedText = formattedText.replace('«', '"')
-        formattedText = formattedText.replace('»', '"')
-        formattedText = formattedText.replace('<br> ', '<br>')
-        formattedText = formattedText.replace(' <br>', '<br>')
-        formattedText = formattedText.replace(self.__dictionary.end + ' ' + self.__dictionary.start + '<br>', '<br>')
-        formattedText = formattedText.replace(self.__dictionary.start + '<br>', '<br>')
-        formattedText = formattedText.replace('<br> ', '<br>')
-        formattedText = formattedText.replace(' <br>', '<br>')
-        formattedText = formattedText.replace('<br>' + self.__dictionary.end + ' ' + self.__dictionary.start, '<br>')
-        formattedText = formattedText.replace('<br>' + self.__dictionary.end, '<br>')
-        formattedText = formattedText.replace('<br> ', '<br>')
-        formattedText = formattedText.replace(' <br>', '<br>')
-        formattedText = re.sub(r'<br>', '\n', formattedText)
-        formattedText = re.sub(r'\n+', '<br>', formattedText)
-        formattedText = re.sub(r'^<br>', self.__dictionary.start + ' ', formattedText)
-        formattedText = re.sub(r'<br>$', ' ' + self.__dictionary.end, formattedText)
-        formattedText = formattedText.replace('<br>', ' ' + self.__dictionary.end + ' ' + self.__dictionary.stop + ' ' + self.__dictionary.start + ' ')
+    def get_formatted_raw_text(self, raw_text: str) -> str:
+        formatted_text = re.sub(r'([\w]+)', r' \g<1> ', raw_text)
+        formatted_text = re.sub(r'\n+', '<br>', formatted_text)
+        formatted_text = re.sub(r'\s+', ' ', formatted_text)
+        formatted_text = re.sub(r'((^\s)|(\s$))', '', formatted_text)
+        formatted_text = re.sub(r'((\s\.)|(\.\s))', '.', formatted_text)
+        formatted_text = formatted_text.replace('...', ' … ')
+        formatted_text = re.sub(r'[\.]+', '.', formatted_text)
+        formatted_text = re.sub(r'((^\.)|(\.$))', '', formatted_text)
+        formatted_text = formatted_text.lower()
+        formatted_text = formatted_text.replace('’', '\'')
+        formatted_text = self.__dictionary.start + ' ' + formatted_text + ' ' + self.__dictionary.end
+        formatted_text = formatted_text.replace('.', ' ' + self.__dictionary.end + ' ' + self.__dictionary.start + ' ')
+        formatted_text = re.sub(r'\s+', ' ', formatted_text)
+        formatted_text = re.sub(r'((^\s)|(\s$))', '', formatted_text)
+        formatted_text = formatted_text.replace(' \' ', '\'')
+        formatted_text = formatted_text.replace('”', '"')
+        formatted_text = formatted_text.replace('“', '"')
+        formatted_text = formatted_text.replace('«', '"')
+        formatted_text = formatted_text.replace('»', '"')
+        formatted_text = formatted_text.replace('<br> ', '<br>')
+        formatted_text = formatted_text.replace(' <br>', '<br>')
+        formatted_text = formatted_text.replace(self.__dictionary.end + ' ' + self.__dictionary.start + '<br>', '<br>')
+        formatted_text = formatted_text.replace(self.__dictionary.start + '<br>', '<br>')
+        formatted_text = formatted_text.replace('<br> ', '<br>')
+        formatted_text = formatted_text.replace(' <br>', '<br>')
+        formatted_text = formatted_text.replace('<br>' + self.__dictionary.end + ' ' + self.__dictionary.start, '<br>')
+        formatted_text = formatted_text.replace('<br>' + self.__dictionary.end, '<br>')
+        formatted_text = formatted_text.replace('<br> ', '<br>')
+        formatted_text = formatted_text.replace(' <br>', '<br>')
+        formatted_text = re.sub(r'<br>', '\n', formatted_text)
+        formatted_text = re.sub(r'\n+', '<br>', formatted_text)
+        formatted_text = re.sub(r'^<br>', self.__dictionary.start + ' ', formatted_text)
+        formatted_text = re.sub(r'<br>$', ' ' + self.__dictionary.end, formatted_text)
+        formatted_text = formatted_text.replace('<br>', ' ' + self.__dictionary.end + ' ' + self.__dictionary.stop + ' ' + self.__dictionary.start + ' ')
 
-        return formattedText
+        return formatted_text
 
-    def getFormattedTokenizedText(self, tokenizedText: list) -> str:
-        formattedText = ' '.join(tokenizedText)
+    def get_formatted_tokenized_text(self, tokenized_text: list) -> str:
+        formatted_text = ' '.join(tokenized_text)
 
-        formattedText = re.sub(r'\s+', ' ', formattedText)
-        formattedText = re.sub(r'((^\s)|(\s$))', '', formattedText)
-        formattedText = re.sub(r'((\s\.)|(\.\s))', '.', formattedText)
+        formatted_text = re.sub(r'\s+', ' ', formatted_text)
+        formatted_text = re.sub(r'((^\s)|(\s$))', '', formatted_text)
+        formatted_text = re.sub(r'((\s\.)|(\.\s))', '.', formatted_text)
 
-        formattedText = re.sub(r'' + self.__dictionary.stop + '', '\n', formattedText)
-        formattedText = re.sub(r'\n+', '\n', formattedText)
-        formattedText = re.sub(r'\s\n', '\n', formattedText)
-        formattedText = re.sub(r'\n\s', '\n', formattedText)
-        formattedText = re.sub(r'\n+', '\n', formattedText)
-        formattedText = re.sub(r'^\n', '', formattedText)
-        formattedText = re.sub(r'\n$', '', formattedText)
+        formatted_text = re.sub(r'' + self.__dictionary.stop + '', '\n', formatted_text)
+        formatted_text = re.sub(r'\n+', '\n', formatted_text)
+        formatted_text = re.sub(r'\s\n', '\n', formatted_text)
+        formatted_text = re.sub(r'\n\s', '\n', formatted_text)
+        formatted_text = re.sub(r'\n+', '\n', formatted_text)
+        formatted_text = re.sub(r'^\n', '', formatted_text)
+        formatted_text = re.sub(r'\n$', '', formatted_text)
 
-        formattedText = formattedText.split('\n')
-        formattedText = formattedText[0]
+        formatted_text = formatted_text.split('\n')
+        formatted_text = formatted_text[0]
 
-        formattedText = formattedText.replace('...', ' … ')
-        formattedText = formattedText.replace('?', '?.')
-        formattedText = formattedText.replace('!', '!.')
-        formattedText = formattedText.replace(',.', '.')
-        formattedText = formattedText.replace('…', '….')
-        formattedText = re.sub(r'[\.]+', '.', formattedText)
-        formattedText = re.sub(r'((^\.)|(\.$))', '', formattedText)
+        formatted_text = formatted_text.replace('...', ' … ')
+        formatted_text = formatted_text.replace('?', '?.')
+        formatted_text = formatted_text.replace('!', '!.')
+        formatted_text = formatted_text.replace(',.', '.')
+        formatted_text = formatted_text.replace('…', '….')
+        formatted_text = re.sub(r'[\.]+', '.', formatted_text)
+        formatted_text = re.sub(r'((^\.)|(\.$))', '', formatted_text)
 
-        formattedText = formattedText.split('.')
+        formatted_text = formatted_text.split('.')
 
-        for sentenceCountIndex, sentence in enumerate(formattedText) :
+        for sentence_count_index, sentence in enumerate(formatted_text) :
             sentence = re.sub(r'\s+', ' ', sentence)
             sentence = re.sub(r'((^\s)|(\s$))', '', sentence)
             sentence = re.sub(r'\s([,;:?!]{1})', r'\g<1>', sentence)
@@ -84,22 +84,22 @@ class Formatter():
             sentence = re.sub(r'^– ', '', sentence)
             sentence = sentence.capitalize() 
 
-            formattedText[sentenceCountIndex] = sentence
+            formatted_text[sentence_count_index] = sentence
 
-        formattedText = '. '.join(formattedText)# + '.'
+        formatted_text = '. '.join(formatted_text)# + '.'
 
-        formattedText = re.sub(r'\s+', ' ', formattedText)
-        formattedText = re.sub(r'((^\s)|(\s$))', '', formattedText)
+        formatted_text = re.sub(r'\s+', ' ', formatted_text)
+        formatted_text = re.sub(r'((^\s)|(\s$))', '', formatted_text)
 
-        formattedText = formattedText.replace('?.', '?')
-        formattedText = formattedText.replace('!.', '!')
-        formattedText = formattedText.replace('….', '…')
-        formattedText = formattedText.replace(',-', ' -')
+        formatted_text = formatted_text.replace('?.', '?')
+        formatted_text = formatted_text.replace('!.', '!')
+        formatted_text = formatted_text.replace('….', '…')
+        formatted_text = formatted_text.replace(',-', ' -')
 
-        formattedText = re.sub(r'\s+', ' ', formattedText)
-        formattedText = re.sub(r'((^\s)|(\s$))', '', formattedText)
+        formatted_text = re.sub(r'\s+', ' ', formatted_text)
+        formatted_text = re.sub(r'((^\s)|(\s$))', '', formatted_text)
 
-        formattedText = re.sub(r'" ([^"]+) "', r'"\g<1>"', formattedText)
-        formattedText = re.sub(r'\( ([^\(\)]+) \)', r'(\g<1>)', formattedText)
+        formatted_text = re.sub(r'" ([^"]+) "', r'"\g<1>"', formatted_text)
+        formatted_text = re.sub(r'\( ([^\(\)]+) \)', r'(\g<1>)', formatted_text)
 
-        return formattedText
+        return formatted_text

@@ -5,7 +5,6 @@ from telegram.message import Message
 from typing import Union
 from settings.settings import Settings
 
-#to-do: refactoring code syle
 #to-do: add logs
 class Telegram:
     __HTTP_STATUS_OK = 200
@@ -17,16 +16,16 @@ class Telegram:
     __SEND_PHOTO_URL = 'https://api.telegram.org/bot%s/sendPhoto?parse_mode=markdown%s'    
     __SEND_VOICE_URL = 'https://api.telegram.org/bot%s/sendVoice?parse_mode=markdown%s'
 
-    __logChatId = None
-    __adminChatId = None
+    __log_chat_id = None
+    __admin_chat_id = None
     __token     = None
 
     def __init__(self):
         config = Settings().get_telegram_config()
 
         self.__token     = config['bot_token']
-        self.__logChatId = config['log_chat_id']
-        self.__adminChatId = config['admin_chat_id']
+        self.__log_chat_id = config['log_chat_id']
+        self.__admin_chat_id = config['admin_chat_id']
 
     def send_message(
         self,
@@ -43,10 +42,10 @@ class Telegram:
         )
 
     def send_message_to_log_chat(self, message: str) -> bool:
-        return self.__send(self.__logChatId, message)
+        return self.__send(self.__log_chat_id, message)
 
     def send_message_to_admin_chat(self, message: str) -> bool:
-        return self.__send(self.__adminChatId, message)
+        return self.__send(self.__admin_chat_id, message)
 
     def get_messages(self) -> list:
         response_rows = self.__get()
@@ -60,15 +59,15 @@ class Telegram:
 
     def send_photo(
         self,
-        id_chat: str,
+        chat_id: str,
         caption: Union[str, None],
         file_path: str,
         replay_to_message_id: Union[int, None] = None
     ) -> Union[Message, None]:
-        data = {'chat_id': id_chat}
+        data = {'chat_id': chat_id}
 
         if caption != None:
-            data = {'chat_id': id_chat, 'caption': caption}
+            data = {'chat_id': chat_id, 'caption': caption}
 
         replay_to_message_id_param = ''
 
@@ -85,8 +84,8 @@ class Telegram:
 
         response = json.loads(response.content)
 
-        if not self.__isResponseHaveValidFormat(response) :
-            raise Exception('Telegram Respose Has Invalid Forrmat. Respose: %s' % json.dumps(response))
+        if not self.__is_response_has_valid_format(response) :
+            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
 
         response = response['result']
 
@@ -95,17 +94,22 @@ class Telegram:
 
         return None
 
-    def sendVoice(self, idChat: str, filePath: str, replayToMessageId: Union[int, None] = None) -> Union[Message, None]:
-        data = {'chat_id': idChat}
+    def send_voice(
+        self,
+        chat_id: str,
+        file_path: str,
+        replay_to_message_id: Union[int, None] = None
+    ) -> Union[Message, None]:
+        data = {'chat_id': chat_id}
 
-        replayToMessageIdParam = ''
+        replay_to_message_id_param = ''
 
-        if replayToMessageId != None:
-            replayToMessageIdParam = '&reply_to_message_id=%s' % replayToMessageId
+        if replay_to_message_id is not None:
+            replay_to_message_id_param = '&reply_to_message_id=%s' % replay_to_message_id
 
-        url = self.__SEND_VOICE_URL % (self.__token, replayToMessageIdParam)
+        url = self.__SEND_VOICE_URL % (self.__token, replay_to_message_id_param)
 
-        with open(filePath, 'rb') as voice_file:
+        with open(file_path, 'rb') as voice_file:
             response = requests.post(url, data=data, files={'voice': voice_file})
 
         if response.status_code != self.__HTTP_STATUS_OK:
@@ -113,8 +117,8 @@ class Telegram:
 
         response = json.loads(response.content)
 
-        if not self.__isResponseHaveValidFormat(response) :
-            raise Exception('Telegram Respose Has Invalid Forrmat. Respose: %s' % json.dumps(response))
+        if not self.__is_response_has_valid_format(response) :
+            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
 
         response = response['result']
 
@@ -133,8 +137,8 @@ class Telegram:
 
         response = json.loads(response.content)
 
-        if not self.__isResponseHaveValidFormat(response) :
-            raise Exception('Telegram Respose Has Invalid Forrmat. Respose: %s' % json.dumps(response))
+        if not self.__is_response_has_valid_format(response) :
+            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
 
         response = response['result']
 
@@ -143,17 +147,23 @@ class Telegram:
 
         return None
 
-    def __send(self, idChat: str, message: str, replayToMessageId: Union[str, None] = None, isMarkdown: bool = False) -> Union[Message, None]:
-        markdownUrlParam = ''
-        replayToMessageIdParam = ''
+    def __send(
+        self,
+        chat_id: str,
+        message: str,
+        replay_to_message_id: Union[str, None] = None,
+        is_markdown: bool = False
+    ) -> Union[Message, None]:
+        markdown_url_param = ''
+        replay_to_message_id_param = ''
 
-        if isMarkdown:
-            markdownUrlParam = 'parse_mode=markdown&'
+        if is_markdown:
+            markdown_url_param = 'parse_mode=markdown&'
 
-        if replayToMessageId != None:
-            replayToMessageIdParam = '&reply_to_message_id=%s' % replayToMessageId
+        if replay_to_message_id is not None:
+            replay_to_message_id_param = '&reply_to_message_id=%s' % replay_to_message_id
 
-        url = self.__SEND_MESSAGE_URL % (self.__token, markdownUrlParam, idChat, message, replayToMessageIdParam)
+        url = self.__SEND_MESSAGE_URL % (self.__token, markdown_url_param, chat_id, message, replay_to_message_id_param)
 
         response = requests.get(url)
 
@@ -162,8 +172,8 @@ class Telegram:
 
         response = json.loads(response.content)
 
-        if not self.__isResponseHaveValidFormat(response) :
-            raise Exception('Telegram Respose Has Invalid Forrmat. Respose: %s' % json.dumps(response))
+        if not self.__is_response_has_valid_format(response) :
+            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
 
         response = response['result']
 
@@ -172,7 +182,7 @@ class Telegram:
 
         return None
 
-    def __isResponseHaveValidFormat(self, response: dict) -> bool:
+    def __is_response_has_valid_format(self, response: dict) -> bool:
         return (
             'ok' in response and
             'result' in response and
