@@ -44,7 +44,7 @@ class Settings:
 
         configFile = open(config_file_path, 'r')
 
-        self.__data[config_file_path] = json.loads(configFile.read())
+        self.__data[config_name] = json.loads(configFile.read())
 
     def __get_config_file_path(self, config_name: str) -> str:
         return self.__CONFIG_FILE_PATH % (getcwd(), config_name)

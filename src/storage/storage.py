@@ -448,9 +448,6 @@ class Storage:
             FROM dictionary;
         '''
 
-        if self.__db_connection is None:
-            self.__connect()
-
         cursor = self.__get_cursor()
 
         cursor.execute(sql)
