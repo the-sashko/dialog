@@ -71,7 +71,7 @@ class Handler:
             self.__storage.save_message(
                 message.getUser().get_id(),
                 message.getChat().get_id(),
-                message.getUser().getName(),
+                message.getUser().get_name(),
                 message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
@@ -99,7 +99,7 @@ class Handler:
         self.__storage.save_message(
             message.getUser().get_id(),
             message.getChat().get_id(),
-            message.getUser().getName(),
+            message.getUser().get_name(),
             message.getChat().get_title(),
             {'role': 'assistant', 'content': command.get_value()}
         )
@@ -120,7 +120,7 @@ class Handler:
             self.__storage.save_message(
                 message.getUser().get_id(),
                 message.getChat().get_id(),
-                message.getUser().getName(),
+                message.getUser().get_name(),
                 message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
@@ -145,7 +145,7 @@ class Handler:
             self.__storage.save_message(
                 message.getUser().get_id(),
                 message.getChat().get_id(),
-                message.getUser().getName(),
+                message.getUser().get_name(),
                 message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
@@ -170,7 +170,7 @@ class Handler:
         self.__storage.save_message(
             message.getUser().get_id(),
             message.getChat().get_id(),
-            message.getUser().getName(),
+            message.getUser().get_name(),
             message.getChat().get_title(),
             {'role': 'assistant', 'content': 'Надіслав тобі зображення'}
         )
@@ -191,7 +191,7 @@ class Handler:
             self.__storage.save_message(
                 message.getUser().get_id(),
                 message.getChat().get_id(),
-                message.getUser().getName(),
+                message.getUser().get_name(),
                 message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
@@ -216,7 +216,7 @@ class Handler:
             self.__storage.save_message(
                 message.getUser().get_id(),
                 message.getChat().get_id(),
-                message.getUser().getName(),
+                message.getUser().get_name(),
                 message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
@@ -232,7 +232,7 @@ class Handler:
         self.__storage.save_message(
             message.getUser().get_id(),
             message.getChat().get_id(),
-            message.getUser().getName(),
+            message.getUser().get_name(),
             message.getChat().get_title(),
             {'role': 'assistant', 'content': 'Надіслав тобі ASCII зображення'}
         )

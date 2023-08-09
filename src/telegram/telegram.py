@@ -107,7 +107,7 @@ class Telegram:
         return None
 
     def __get(self) -> Union[list, None]:
-        url = self.__GET_MESSAGES_URL % (self.__token, Message.getLastUpdateId() + 1, self.__GET_MESSAGES_LIMIT)
+        url = self.__GET_MESSAGES_URL % (self.__token, Message.get_last_update_id() + 1, self.__GET_MESSAGES_LIMIT)
 
         response = requests.get(url)
 

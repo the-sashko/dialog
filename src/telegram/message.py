@@ -12,7 +12,6 @@ from settings.settings import Settings
 from transcription.transcription import Transcription
 
 #to-do: refactoring code syle
-#to-do: add logs
 class Message:
     __LAST_UPDATE_ID_FILE_PATH = '%s/data/telegram_last_update_id.txt'
 
@@ -40,8 +39,8 @@ class Message:
 
         self.__transcribe_voice()
 
-        if (self.getUpdateId() != None):
-            self.__save_last_update_id(self.getUpdateId())
+        if (self.get_update_id() != None):
+            self.__save_last_update_id(self.get_update_id())
 
     def __map_message_values(self, values: dict):
         # if message index is missing but result exists (in case when it is respose after sending message)
@@ -56,8 +55,8 @@ class Message:
         self.__set_user(values['message']['from'])
         self.__set_chat(values['message']['chat'])
 
-        if self.getUser().isBot() and self.getUser().getName() == 'Group':
-            self.getUser().setName(self.getChat().get_title())
+        if self.getUser().is_bot() and self.getUser().get_name() == 'Group':
+            self.getUser().set_name(self.getChat().get_title())
 
         if 'text' in values['message']:
             self.__set_text(str(values['message']['text']))
@@ -74,13 +73,13 @@ class Message:
     def get_id(self) -> int:
         return self.__id
 
-    def getUpdateId(self) -> Union[int, None]:
+    def get_update_id(self) -> Union[int, None]:
         return self.__update_id
 
     def getText(self) -> Union[str, None]:
         return self.__text
 
-    def getDate(self) -> int:
+    def get_date(self) -> int:
         return self.__date
 
     def getUser(self) -> User:
@@ -89,13 +88,13 @@ class Message:
     def getChat(self) -> Chat:
         return self.__chat
 
-    def getVoice(self) -> Union[None, Voice]:
+    def get_voice(self) -> Union[None, Voice]:
         return self.__voice
 
-    def getParent(self) -> Union[None, any]:#TO-DO: change any
+    def get_parent(self) -> Union[None, any]:#TO-DO: change any
         return self.__parent
 
-    def isReplyToMe(self) -> bool:
+    def is_reply_to_me(self) -> bool:
         if self.__parent is None:
             return False
 
@@ -105,34 +104,34 @@ class Message:
             return False
 
     @staticmethod
-    def getLastUpdateId() -> int:
-        lastUpdateIdFilePath = Message.__get_last_update_id_file_path()
+    def get_last_update_id() -> int:
+        last_update_id_file_path = Message.__get_last_update_id_file_path()
 
-        if not path.exists(lastUpdateIdFilePath) or not path.isfile(lastUpdateIdFilePath):
+        if not path.exists(last_update_id_file_path) or not path.isfile(last_update_id_file_path):
             return 0
 
-        lastUpdateIdFile = open(lastUpdateIdFilePath, 'r')
+        last_update_id_file = open(last_update_id_file_path, 'r')
 
-        lastUpdateId = lastUpdateIdFile.read()
+        last_update_id = last_update_id_file.read()
 
-        lastUpdateIdFile.close()
+        last_update_id_file.close()
 
-        if lastUpdateId == '':
+        if last_update_id == '':
             return 0
 
-        return int(lastUpdateId)
+        return int(last_update_id)
 
     def __save_last_update_id(self, last_update_id: int) -> None:
         last_update_id_file_path = self.__get_last_update_id_file_path()
 
-        last_update_id_from_file = self.getLastUpdateId()
+        last_update_id_from_file = self.get_last_update_id()
 
         if last_update_id_from_file > last_update_id:
             return None
 
-        lastUpdateIdFile = open(last_update_id_file_path, 'w')
-        lastUpdateIdFile.write(str(last_update_id))
-        lastUpdateIdFile.close()
+        last_update_id_file = open(last_update_id_file_path, 'w')
+        last_update_id_file.write(str(last_update_id))
+        last_update_id_file.close()
 
     def __set_id(self, id: int) -> None:
         self.__id = id
@@ -159,12 +158,12 @@ class Message:
         self.__parent = Message(values)
 
     def __transcribe_voice(self) -> None:
-        voice = self.getVoice()
+        voice = self.get_voice()
 
         if voice == None:
             return None
         
-        file_path = voice.getFile().get_file_path()
+        file_path = voice.get_file().get_file_path()
 
         if file_path == None:
             return None

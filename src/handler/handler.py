@@ -76,7 +76,7 @@ class Handler:
         self.__storage.save_message(
             message.getUser().get_id(),
             message.getChat().get_id(),
-            message.getUser().getName(),
+            message.getUser().get_name(),
             message.getChat().get_title(),
             {"role": "user", "content": message.getText()}
         )
@@ -153,10 +153,10 @@ class Handler:
         if message.getChat().get_id() == self.__telegram_log_chat_id:
             return True
 
-        if message.getChat().is_private_type() or message.isReplyToMe():
+        if message.getChat().is_private_type() or message.is_reply_to_me():
             return False
 
-        if message.getVoice() is not None:
+        if message.get_voice() is not None:
             return False
 
         pattern = r'^(.*?)' + re.escape(self.__bot_name) + r'(.*?)$'
@@ -173,7 +173,7 @@ class Handler:
         return True
 
     def __is_reply_in_audio(self, message: Telegram_Message) -> bool:
-        if message.getVoice() is not None:
+        if message.get_voice() is not None:
             return True
         
         #TO-DO: parse voice keywords
