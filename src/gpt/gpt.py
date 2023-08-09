@@ -43,8 +43,8 @@ class Gpt:
         mood: str = 'neutral'
     ) -> Union[str, None]:
         context = self.__storage.get_context(
-            message.getUser().getId(),
-            message.getChat().getId()
+            message.getUser().get_id(),
+            message.getChat().get_id()
         )
 
         parent_text = None
@@ -63,8 +63,8 @@ class Gpt:
             return reply
 
         self.__storage.save_message(
-            message.getUser().getId(),
-            message.getChat().getId(),
+            message.getUser().get_id(),
+            message.getChat().get_id(),
             message.getUser().getName(),
             message.getChat().getTitle(),
             {'role': 'assistant', 'content': reply}

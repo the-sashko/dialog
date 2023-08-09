@@ -36,42 +36,42 @@ class Message:
 
         self.__bot_id = telegram_config['bot_id']
 
-        self.__mapMessageValues(values)
+        self.__map_message_values(values)
 
-        self.__transcribeVoice()
+        self.__transcribe_voice()
 
         if (self.getUpdateId() != None):
-            self.__saveLastUpdateId(self.getUpdateId())
+            self.__save_last_update_id(self.getUpdateId())
 
-    def __mapMessageValues(self, values: dict):
+    def __map_message_values(self, values: dict):
         # if message index is missing but result exists (in case when it is respose after sending message)
         if 'message' not in values and 'message_id' in values:
             values = dict({'message': values})
 
-        if not self.__isValuesHaveValidMessageFormat(values):
-            raise Exception('Telegram Message Values Have Invalid Format. Values: %s' % json.dumps(values))
+        if not self.__is_values_have_valid_message_format(values):
+            raise Exception('Telegram message values have invalid format. Values: %s' % json.dumps(values))
 
-        self.__setId(int(values['message']['message_id']))
-        self.__setDate(int(values['message']['date']))
-        self.__setUser(values['message']['from'])
-        self.__setChat(values['message']['chat'])
+        self.__set_id(int(values['message']['message_id']))
+        self.__set_date(int(values['message']['date']))
+        self.__set_user(values['message']['from'])
+        self.__set_chat(values['message']['chat'])
 
         if self.getUser().isBot() and self.getUser().getName() == 'Group':
             self.getUser().setName(self.getChat().getTitle())
 
         if 'text' in values['message']:
-            self.__setText(str(values['message']['text']))
+            self.__set_text(str(values['message']['text']))
 
         if 'voice' in values['message']:
-            self.__setVoice(values['message']['voice'])
+            self.__set_voice(values['message']['voice'])
 
         if 'reply_to_message' in values['message']:
-            self.__setParent(values['message']['reply_to_message'])
+            self.__set_parent(values['message']['reply_to_message'])
 
         if 'update_id' in values:
-            self.__setUpdateId(int(values['update_id']))
+            self.__set_update_id(int(values['update_id']))
 
-    def getId(self) -> int:
+    def get_id(self) -> int:
         return self.__id
 
     def getUpdateId(self) -> Union[int, None]:
@@ -100,13 +100,13 @@ class Message:
             return False
 
         try:
-            return self.__parent.getUser().getId() == self.__bot_id
+            return self.__parent.getUser().get_id() == self.__bot_id
         except:
             return False
 
     @staticmethod
     def getLastUpdateId() -> int:
-        lastUpdateIdFilePath = Message.__getLastUpdateIdFilePath()
+        lastUpdateIdFilePath = Message.__get_last_update_id_file_path()
 
         if not path.exists(lastUpdateIdFilePath) or not path.isfile(lastUpdateIdFilePath):
             return 0
@@ -122,43 +122,43 @@ class Message:
 
         return int(lastUpdateId)
 
-    def __saveLastUpdateId(self, lastUpdateId: int) -> None:
-        lastUpdateIdFilePath = self.__getLastUpdateIdFilePath()
+    def __save_last_update_id(self, last_update_id: int) -> None:
+        last_update_id_file_path = self.__get_last_update_id_file_path()
 
-        lastUpdateIdFromFile = self.getLastUpdateId()
+        last_update_id_from_file = self.getLastUpdateId()
 
-        if lastUpdateIdFromFile > lastUpdateId:
-            return
+        if last_update_id_from_file > last_update_id:
+            return None
 
-        lastUpdateIdFile = open(lastUpdateIdFilePath, 'w')
-        lastUpdateIdFile.write(str(lastUpdateId))
+        lastUpdateIdFile = open(last_update_id_file_path, 'w')
+        lastUpdateIdFile.write(str(last_update_id))
         lastUpdateIdFile.close()
 
-    def __setId(self, id: int) -> None:
+    def __set_id(self, id: int) -> None:
         self.__id = id
 
-    def __setUpdateId(self, updateId: int) -> None:
-        self.__update_id = updateId
+    def __set_update_id(self, update_id: int) -> None:
+        self.__update_id = update_id
 
-    def __setText(self, text: str) -> None:
+    def __set_text(self, text: str) -> None:
         self.__text = text
 
-    def __setDate(self, date: int) -> None:
+    def __set_date(self, date: int) -> None:
         self.__date = date
 
-    def __setUser(self, values: dict) -> None:
+    def __set_user(self, values: dict) -> None:
         self.__user = User(values)
 
-    def __setChat(self, values: dict) -> None:
+    def __set_chat(self, values: dict) -> None:
         self.__chat = Chat(values)
 
-    def __setVoice(self, values: dict) -> None:
+    def __set_voice(self, values: dict) -> None:
         self.__voice = Voice(values)
 
-    def __setParent(self, values: dict) -> None:
+    def __set_parent(self, values: dict) -> None:
         self.__parent = Message(values)
 
-    def __transcribeVoice(self) -> None:
+    def __transcribe_voice(self) -> None:
         voice = self.getVoice()
 
         if voice == None:
@@ -174,9 +174,9 @@ class Message:
         if text == None:
             return None
 
-        self.__setText(text)
+        self.__set_text(text)
 
-    def __isValuesHaveValidMessageFormat(self, values: dict) -> bool:
+    def __is_values_have_valid_message_format(self, values: dict) -> bool:
         return (
             'message' in values and
             type(values['message']) == dict and
@@ -189,5 +189,5 @@ class Message:
         )
 
     @staticmethod
-    def __getLastUpdateIdFilePath() -> str:
+    def __get_last_update_id_file_path() -> str:
         return Message.__LAST_UPDATE_ID_FILE_PATH % getcwd()

@@ -22,7 +22,7 @@ class Chat:
         self.__setTitle(values)
         self.__setType(str(values['type']))
 
-    def getId(self) -> int:
+    def get_id(self) -> int:
         return self.__id
 
     def getTitle(self) -> str:

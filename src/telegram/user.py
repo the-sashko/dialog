@@ -15,7 +15,7 @@ class User:
         self.__setName(values)
         self.__setIsBot(bool(values['is_bot']))
 
-    def getId(self) -> int:
+    def get_id(self) -> int:
         return self.__id
 
     def getName(self) -> str:

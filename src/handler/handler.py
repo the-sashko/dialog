@@ -65,17 +65,17 @@ class Handler:
         if not message.getChat().isSupported():
             return None
 
-        if message.getUser().getId() == self.__telegram_bot_id:
+        if message.getUser().get_id() == self.__telegram_bot_id:
             return None
 
-        reply_to_message_id = message.getId()
+        reply_to_message_id = message.get_id()
 
         if (message.getChat().isPrivateType()):
             reply_to_message_id = None
 
         self.__storage.save_message(
-            message.getUser().getId(),
-            message.getChat().getId(),
+            message.getUser().get_id(),
+            message.getChat().get_id(),
             message.getUser().getName(),
             message.getChat().getTitle(),
             {"role": "user", "content": message.getText()}
@@ -118,7 +118,7 @@ class Handler:
             audio_file_path = self.__tts.text2audio(reply)
 
             self.__telegram.sendVoice(
-                message.getChat().getId(),
+                message.getChat().get_id(),
                 audio_file_path,
                 reply_to_message_id
             )
@@ -127,7 +127,7 @@ class Handler:
 
         self.__telegram.sendMessage(
             reply,
-            message.getChat().getId(),
+            message.getChat().get_id(),
             reply_to_message_id
         )
 
@@ -150,7 +150,7 @@ class Handler:
         return reply
 
     def __is_ignore(self, message: Telegram_Message) -> bool:        
-        if message.getChat().getId() == self.__telegram_log_chat_id:
+        if message.getChat().get_id() == self.__telegram_log_chat_id:
             return True
 
         if message.getChat().isPrivateType() or message.isReplyToMe():

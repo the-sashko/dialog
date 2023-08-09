@@ -69,8 +69,8 @@ class Handler:
             reply = self.__gpt.paraphrase('Я не буду це казати', 'angry')#TO-DO: to const
 
             self.__storage.save_message(
-                message.getUser().getId(),
-                message.getChat().getId(),
+                message.getUser().get_id(),
+                message.getChat().get_id(),
                 message.getUser().getName(),
                 message.getChat().getTitle(),
                 {'role': 'assistant', 'content': reply}
@@ -78,7 +78,7 @@ class Handler:
 
             self.__telegram.sendMessage(
                 reply,
-                message.getChat().getId(),
+                message.getChat().get_id(),
                 reply_to_message_id
             )
 
@@ -90,15 +90,15 @@ class Handler:
 
         self.__logger.log('Start sending voice message')
         self.__telegram.sendVoice(
-            message.getChat().getId(),
+            message.getChat().get_id(),
             audio_file_path,
             reply_to_message_id
         )
         self.__logger.log('End sending voice message')
 
         self.__storage.save_message(
-            message.getUser().getId(),
-            message.getChat().getId(),
+            message.getUser().get_id(),
+            message.getChat().get_id(),
             message.getUser().getName(),
             message.getChat().getTitle(),
             {'role': 'assistant', 'content': command.get_value()}
@@ -118,8 +118,8 @@ class Handler:
             reply = self.__gpt.paraphrase('Я не буду це малювати', 'angry')#TO-DO: to const
 
             self.__storage.save_message(
-                message.getUser().getId(),
-                message.getChat().getId(),
+                message.getUser().get_id(),
+                message.getChat().get_id(),
                 message.getUser().getName(),
                 message.getChat().getTitle(),
                 {'role': 'assistant', 'content': reply}
@@ -127,7 +127,7 @@ class Handler:
 
             self.__telegram.sendMessage(
                 reply,
-                message.getChat().getId(),
+                message.getChat().get_id(),
                 reply_to_message_id
             )
 
@@ -143,8 +143,8 @@ class Handler:
             reply = self.__gpt.paraphrase('Вибач, братан, але я не зміг це намалювати. Може спрбуємо намалювати щось інше?', 'apologies')#TO-DO: to const
 
             self.__storage.save_message(
-                message.getUser().getId(),
-                message.getChat().getId(),
+                message.getUser().get_id(),
+                message.getChat().get_id(),
                 message.getUser().getName(),
                 message.getChat().getTitle(),
                 {'role': 'assistant', 'content': reply}
@@ -152,7 +152,7 @@ class Handler:
 
             self.__telegram.sendMessage(
                 reply,
-                message.getChat().getId(),
+                message.getChat().get_id(),
                 reply_to_message_id
             )
 
@@ -160,7 +160,7 @@ class Handler:
 
         self.__logger.log('Start sending image')
         self.__telegram.sendPhoto(
-            message.getChat().getId(),
+            message.getChat().get_id(),
             None,
             image_path,
             reply_to_message_id
@@ -168,8 +168,8 @@ class Handler:
         self.__logger.log('End sending image')
 
         self.__storage.save_message(
-            message.getUser().getId(),
-            message.getChat().getId(),
+            message.getUser().get_id(),
+            message.getChat().get_id(),
             message.getUser().getName(),
             message.getChat().getTitle(),
             {'role': 'assistant', 'content': 'Надіслав тобі зображення'}
@@ -189,8 +189,8 @@ class Handler:
             reply = self.__gpt.paraphrase('Я не буду цього робити', 'angry')#TO-DO: to const
 
             self.__storage.save_message(
-                message.getUser().getId(),
-                message.getChat().getId(),
+                message.getUser().get_id(),
+                message.getChat().get_id(),
                 message.getUser().getName(),
                 message.getChat().getTitle(),
                 {'role': 'assistant', 'content': reply}
@@ -198,7 +198,7 @@ class Handler:
 
             self.__telegram.sendMessage(
                 reply,
-                message.getChat().getId(),
+                message.getChat().get_id(),
                 reply_to_message_id
             )
 
@@ -214,8 +214,8 @@ class Handler:
             reply = self.__gpt.paraphrase('Вибач, братан, але я не зміг це зробити. Може спрбуємо намалювати щось інше?', 'apologies')#TO-DO: to const
 
             self.__storage.save_message(
-                message.getUser().getId(),
-                message.getChat().getId(),
+                message.getUser().get_id(),
+                message.getChat().get_id(),
                 message.getUser().getName(),
                 message.getChat().getTitle(),
                 {'role': 'assistant', 'content': reply}
@@ -223,15 +223,15 @@ class Handler:
 
             self.__telegram.sendMessage(
                 reply,
-                message.getChat().getId(),
+                message.getChat().get_id(),
                 reply_to_message_id
             )
 
             return None
 
         self.__storage.save_message(
-            message.getUser().getId(),
-            message.getChat().getId(),
+            message.getUser().get_id(),
+            message.getChat().get_id(),
             message.getUser().getName(),
             message.getChat().getTitle(),
             {'role': 'assistant', 'content': 'Надіслав тобі ASCII зображення'}
@@ -240,7 +240,7 @@ class Handler:
         self.__logger.log('Start sending ASCII')
         self.__telegram.sendMessage(
             '`' + ascii_image + '`',
-            message.getChat().getId(),
+            message.getChat().get_id(),
             reply_to_message_id,
             True
         )

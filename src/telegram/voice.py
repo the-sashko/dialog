@@ -17,7 +17,7 @@ class Voice:
         self.__setMimeType(values['mime_type'])
         self.__setFile(values['file_id'])
 
-    def getId(self) -> str:
+    def get_id(self) -> str:
         return self.__id
 
     def getMimeType(self) -> str:
