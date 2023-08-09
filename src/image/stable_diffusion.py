@@ -16,7 +16,7 @@ class StableDiffusion:
     __HOST = 'grpc.stability.ai:443'
 
     def __init__(self):
-        config = Settings().getStableDiffusionConfig()
+        config = Settings().get_stable_diffusion_config()
 
         os.environ['STABILITY_KEY'] = config['api_key']
         os.environ['STABILITY_HOST'] = self.__HOST

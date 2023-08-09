@@ -8,7 +8,7 @@ class Transcription:
     __WHISPER_1_MODEL = 'whisper-1'
 
     def __init__(self):
-        config = Settings().getOpenAiConfig()
+        config = Settings().get_open_ai_config()
 
         openai.api_key = config['api_key']
 

@@ -32,7 +32,7 @@ class Message:
     def __init__(self, values: dict):
         self.__transcription = Transcription()
 
-        telegram_config = Settings().getTelegramConfig()
+        telegram_config = Settings().get_telegram_config()
 
         self.__bot_id = telegram_config['bot_id']
 

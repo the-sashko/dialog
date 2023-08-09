@@ -12,7 +12,7 @@ class Dalee:
     __HTTP_STATUS_OK = 200
 
     def __init__(self):
-        config = Settings().getOpenAiConfig()
+        config = Settings().get_open_ai_config()
 
         openai.api_key = config['api_key']
 

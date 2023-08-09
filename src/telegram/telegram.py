@@ -22,7 +22,7 @@ class Telegram:
     __token     = None
 
     def __init__(self):
-        config = Settings().getTelegramConfig()
+        config = Settings().get_telegram_config()
 
         self.__token     = config['bot_token']
         self.__logChatId = config['log_chat_id']

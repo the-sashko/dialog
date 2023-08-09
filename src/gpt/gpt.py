@@ -26,8 +26,8 @@ class Gpt:
     __bot_name = None
 
     def __init__(self):
-        open_api_config = Settings().getOpenAiConfig()
-        bot_config = Settings().getBotConfig()
+        open_api_config = Settings().get_open_ai_config()
+        bot_config = Settings().get_bot_config()
 
         openai.api_key = open_api_config['api_key']
 

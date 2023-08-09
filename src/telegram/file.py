@@ -19,7 +19,7 @@ class File:
     __token = None
 
     def __init__(self, file_id: str):
-        config = Settings().getTelegramConfig()
+        config = Settings().get_telegram_config()
 
         self.__token = config['bot_token']
 

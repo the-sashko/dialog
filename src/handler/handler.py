@@ -50,8 +50,8 @@ class Handler:
         self.__command_handler = Command_Handler()
         self.__logger = Logger()
 
-        telegram_config = Settings().getTelegramConfig()
-        bot_config = Settings().getBotConfig()
+        telegram_config = Settings().get_telegram_config()
+        bot_config = Settings().get_bot_config()
 
         self.__telegram_log_chat_id = telegram_config['log_chat_id']
 
