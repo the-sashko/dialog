@@ -1,4 +1,5 @@
 {
     "name" : "<BOT_NAME>",
-    "description": "<BOT_CHARACTER_DESCRIPTION>"
+    "description": "<BOT_CHARACTER_DESCRIPTION>",
+    "custom_instructions": "<CUSTOM_INSTRUCTIONS>"
 }

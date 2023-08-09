@@ -1,9 +1,11 @@
 from typing import Union
 from logger.logger import Logger
 from telegram.telegram import Telegram
+from telegram.message import Message as Telegram_Message
 from gpt.gpt import Gpt
 from tts.tts import Tts
 from image.image import Image
+from storage.storage import Storage
 
 class Script:
     TEST_SCRIPT = 'test'
@@ -19,6 +21,7 @@ class Script:
     __gpt = None
     __tts = None
     __image = None
+    __storage = None
 
     def __init__(self):
         self.__logger = Logger()
@@ -26,6 +29,7 @@ class Script:
         self.__gpt = Gpt()
         self.__tts = Tts()
         self.__image = Image()
+        self.__storage = Storage()
 
     def run(
         self,
@@ -72,19 +76,30 @@ class Script:
         raise Exception('Unknown script %s' % name)
 
     def __do_none(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'replay_to_message_id' not in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
+        
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': 'None'}
+            )
 
         self.__telegram.send_message(
             'None',
             data['chat_id'],
-            data['replay_to_message_id']
+            data['reply_to_message_id']
         )
 
     def __do_test(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'replay_to_message_id' not in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
@@ -93,14 +108,25 @@ class Script:
             'Анус собі протестуй. Пес, блядь'#To-Do: to config
         )
 
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': reply}
+            )
+
         self.__telegram.send_message(
             reply,
             data['chat_id'],
-            data['replay_to_message_id']
+            data['reply_to_message_id']
         )
 
     def __do_hello(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'replay_to_message_id' not in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
@@ -109,14 +135,25 @@ class Script:
             'Привіт, мудило. Давно не бачилися'#To-Do: to config
         )
 
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': reply}
+            )
+
         self.__telegram.send_message(
             reply,
             data['chat_id'],
-            data['replay_to_message_id']
+            data['reply_to_message_id']
         )
 
     def __do_about_me(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'replay_to_message_id' not in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
@@ -125,10 +162,21 @@ class Script:
             'Хто я? Я коханець твоєї мамки!'#To-Do: to config
         )
 
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': reply}
+            )
+
         self.__telegram.send_message(
             reply,
             data['chat_id'],
-            data['replay_to_message_id']
+            data['reply_to_message_id']
         )
 
     def __do_random_text(self, data: Union[dict, None] = None) -> None:
@@ -140,6 +188,17 @@ class Script:
         reply = self.__gpt.paraphrase(
             'Агов, як справи, сучки!'#To-Do: implement random
         )
+
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': reply}
+            )
 
         self.__telegram.send_message(
             reply,
@@ -155,6 +214,17 @@ class Script:
         reply = self.__gpt.paraphrase(
             'Агов, як справи, сучки!'#To-Do: implement random
         )
+
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': reply}
+            )
 
         voice_file_path = self.__tts.text2audio(reply)
 
@@ -172,6 +242,17 @@ class Script:
         prompt = self.__gpt.paraphrase(
             'photo of cat burps'#To-Do: implement random
         )
+
+        if 'message' in data and type(data['message']) == Telegram_Message:
+            message = data['message']
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {'role': 'assistant', 'content': 'Дивись: %s' % prompt}
+            )
 
         image_file_path = self.__image.create_image(prompt)
 

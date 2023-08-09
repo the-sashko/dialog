@@ -24,6 +24,7 @@ class Gpt:
 
     __bot_description = None
     __bot_name = None
+    __bot_custom_instructions = None
 
     def __init__(self):
         open_api_config = Settings().get_open_ai_config()
@@ -33,6 +34,7 @@ class Gpt:
 
         self.__bot_description = bot_config['description']
         self.__bot_name = bot_config['name']
+        self.__bot_custom_instructions = bot_config['custom_instructions']
 
         self.__storage = Storage()
         self.__logger = Logger()
@@ -82,10 +84,11 @@ class Gpt:
             user_name = 'Юзер'
 
         prompt = [
-            {'role': 'system', 'content': self.__INITAL_PROMPT}
+            {'role': 'system', 'content': self.__INITAL_PROMPT},
+            {'role': 'system', 'content': self.__bot_custom_instructions}
         ]
 
-        prompt[0]['content'] = prompt[0]['content'] % user_name        
+        prompt[0]['content'] = prompt[0]['content'] % (self.__bot_description, self.__bot_name, user_name)
 
         prompt.append({'role': 'system', 'content': 'Rewrite this text: %s' % text})
 
@@ -150,7 +153,8 @@ class Gpt:
             mood: str = 'neutral'
     ) -> list:
         prompt = [
-            {'role': 'system', 'content': self.__INITAL_PROMPT}
+            {'role': 'system', 'content': self.__INITAL_PROMPT},
+            {'role': 'system', 'content': self.__bot_custom_instructions}
         ]
 
         prompt[0]['content'] = prompt[0]['content'] % (self.__bot_description, self.__bot_name, user_name)

@@ -5,6 +5,7 @@ from command.parser import Parser
 from gpt.gpt import Gpt
 from telegram.message import Message as Telegram_Message
 from logger.logger import Logger
+from trigger.trigger import Trigger
 
 class Analyser:
     __parser = None
@@ -52,6 +53,10 @@ class Analyser:
             return 'angry'
 
         return mood
+
+    def get_trigger(self, message: Telegram_Message) -> Union[str, None]:
+        if message.get_text().lower() == 'test':
+            return Trigger.TEST_TRIGGER
 
     def __is_voice_command(self, message: Telegram_Message) -> bool:
         return self.__is_command('say something', message)

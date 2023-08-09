@@ -14,6 +14,7 @@ from chance.chance import Chance
 from command.parser import Parser as Command_Parser
 from command.handler import Handler as Command_Handler
 from logger.logger import Logger
+from trigger.trigger import Trigger
 
 #to-do: refactoring code syle
 #to-do: add logs
@@ -33,6 +34,7 @@ class Handler:
     __command_parser = None
     __command_handler = None
     __logger = None
+    __trigger = None
 
     __telegram_bot_id = None
     __telegram_log_chat_id = None
@@ -49,6 +51,7 @@ class Handler:
         self.__command_parser = Command_Parser()
         self.__command_handler = Command_Handler()
         self.__logger = Logger()
+        self.__trigger = Trigger()
 
         telegram_config = Settings().get_telegram_config()
         bot_config = Settings().get_bot_config()
@@ -84,6 +87,25 @@ class Handler:
         if self.__is_ignore(message):
             return None
 
+        self.__logger.log('Start retrieving trigger from Telegram message')
+
+        trigger_name = self.__analyser.get_trigger(message)
+
+        if trigger_name is not None:
+            self.__logger.log('Found %s trigger' % trigger_name)
+
+        self.__logger.log('End retrieving trigger from Telegram message')
+
+        if trigger_name is not None:
+            return self.__trigger.fire(
+                trigger_name,
+                {
+                    'chat_id': message.get_chat().get_id(),
+                    'reply_to_message_id': reply_to_message_id,
+                    'message': message
+                }
+            )
+
         self.__logger.log('Start retrieving command from Telegram message')
 
         command = self.__analyser.get_command(message)
@@ -93,7 +115,7 @@ class Handler:
 
         self.__logger.log('End retrieving command from Telegram message')
 
-        if command != None:
+        if command is not None:
             return self.__command_handler.do_handle(
                 command,
                 message,

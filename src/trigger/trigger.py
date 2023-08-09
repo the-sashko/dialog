@@ -4,6 +4,14 @@ from script.sctript import Script
 from logger.logger import Logger
 
 class Trigger:
+    TEST_TRIGGER = 'test'
+    HELLO_TRIGGER = 'hello'
+    ABOUT_ME_TRIGGER = 'about_me'
+    RANDOM_TEXT_TRIGGER = 'random_text'
+    RANDOM_VOICE_TRIGGER = 'random_voice'
+    RANDOM_IMAGE_TRIGGER = 'random_image'
+    NONE_TRIGGER = 'none'
+
     __script = None
     __logger = None
 
@@ -21,60 +29,39 @@ class Trigger:
                 'Fired %s trigger' % name
             )
 
-        if name == Script.TEST_SCRIPT or self.__is_test(data):
+        if name == self.TEST_TRIGGER:
             self.__script.run(Script.TEST_SCRIPT, data)
 
             return None
 
-        if name == Script.HELLO_SCRIPT or self.__is_hello(data):
+        if name == self.HELLO_TRIGGER:
             self.__script.run(Script.HELLO_SCRIPT, data)
 
             return None
 
-        if name == Script.ABOUT_ME_SCRIPT or self.__is_about_me(data):
+        if name == self.ABOUT_ME_TRIGGER:
             self.__script.run(Script.ABOUT_ME_SCRIPT, data)
 
             return None
 
-        if name == Script.RANDOM_TEXT_SCRIPT:
+        if name == self.RANDOM_TEXT_TRIGGER:
             self.__script.run(Script.RANDOM_TEXT_SCRIPT, data)
 
             return None
 
-        if name == Script.RANDOM_VOICE_SCRIPT:
+        if name == self.RANDOM_VOICE_TRIGGER:
             self.__script.run(Script.RANDOM_VOICE_SCRIPT, data)
 
             return None
 
-        if name == Script.RANDOM_IMAGE_SCRIPT:
+        if name == self.RANDOM_IMAGE_TRIGGER:
             self.__script.run(Script.RANDOM_IMAGE_SCRIPT, data)
 
             return None
 
-        if name == Script.NONE_SCRIPT:
+        if name == self.NONE_TRIGGER:
             self.__script.run(Script.NONE_SCRIPT, data)
 
             return None
         
         raise Exception('Unknown trigger %s' % name)
-
-    def __is_test(
-        self,
-        data: Union[dict, None] = None
-    ) -> bool:
-        #To-Do
-        return False
-
-    def __is_hello(
-        self,
-        data: Union[dict, None] = None
-    ) -> bool:
-        #To-Do
-        return False
-
-    def __is_about_me(
-        self,
-        data: Union[dict, None] = None
-    ) -> bool:
-        #To-Do
-        return False
