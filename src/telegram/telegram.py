@@ -26,42 +26,59 @@ class Telegram:
 
         self.__token     = config['bot_token']
         self.__logChatId = config['log_chat_id']
-        self.__adminChatId = config['log_chat_id']
+        self.__adminChatId = config['admin_chat_id']
 
-    def sendMessage(self, message: str, chatId: int, replayToMessageId: Union[str, None] = None, isMarkdown: bool = False) -> bool:
-        return self.__send(chatId, message, replayToMessageId, isMarkdown)
+    def send_message(
+        self,
+        message: str,
+        chat_id: int,
+        replay_to_message_id: Union[str, None] = None,
+        is_markdown: bool = False
+    ) -> bool:
+        return self.__send(
+            chat_id,
+            message,
+            replay_to_message_id,
+            is_markdown
+        )
 
-    def sendMessageToLogChat(self, message: str) -> bool:
+    def send_message_to_log_chat(self, message: str) -> bool:
         return self.__send(self.__logChatId, message)
 
-    def sendMessageToAdminChat(self, message: str) -> bool:
-        return self.__send(self.__logChatId, message)
+    def send_message_to_admin_chat(self, message: str) -> bool:
+        return self.__send(self.__adminChatId, message)
 
-    def getMessages(self) -> list:
-        responseRows = self.__get()
+    def get_messages(self) -> list:
+        response_rows = self.__get()
 
-        if responseRows == None :
+        if response_rows is None :
             return list()
 
-        messages = list(map(lambda responseRow : Message(responseRow), responseRows))
+        messages = list(map(lambda response_row : Message(response_row), response_rows))
 
         return messages
 
-    def sendPhoto(self, idChat: str, caption: Union[str, None], filePath: str, replayToMessageId: Union[int, None] = None) -> Union[Message, None]:
-        data = {"chat_id": idChat}
+    def send_photo(
+        self,
+        id_chat: str,
+        caption: Union[str, None],
+        file_path: str,
+        replay_to_message_id: Union[int, None] = None
+    ) -> Union[Message, None]:
+        data = {'chat_id': id_chat}
 
         if caption != None:
-            data = {"chat_id": idChat, "caption": caption}
+            data = {'chat_id': id_chat, 'caption': caption}
 
-        replayToMessageIdParam = ''
+        replay_to_message_id_param = ''
 
-        if replayToMessageId != None:
-            replayToMessageIdParam = '&reply_to_message_id=%s' % replayToMessageId
-        
-        url = self.__SEND_PHOTO_URL % (self.__token, replayToMessageIdParam)
+        if replay_to_message_id is not None:
+            replay_to_message_id_param = '&reply_to_message_id=%s' % replay_to_message_id
 
-        with open(filePath, "rb") as image_file:
-            response = requests.post(url, data=data, files={"photo": image_file})
+        url = self.__SEND_PHOTO_URL % (self.__token, replay_to_message_id_param)
+
+        with open(file_path, 'rb') as image_file:
+            response = requests.post(url, data=data, files={'photo': image_file})
 
         if response.status_code != self.__HTTP_STATUS_OK:
             return None
@@ -77,19 +94,19 @@ class Telegram:
             return Message(response)
 
         return None
-    
+
     def sendVoice(self, idChat: str, filePath: str, replayToMessageId: Union[int, None] = None) -> Union[Message, None]:
-        data = {"chat_id": idChat}
+        data = {'chat_id': idChat}
 
         replayToMessageIdParam = ''
 
         if replayToMessageId != None:
             replayToMessageIdParam = '&reply_to_message_id=%s' % replayToMessageId
-        
+
         url = self.__SEND_VOICE_URL % (self.__token, replayToMessageIdParam)
 
-        with open(filePath, "rb") as voice_file:
-            response = requests.post(url, data=data, files={"voice": voice_file})
+        with open(filePath, 'rb') as voice_file:
+            response = requests.post(url, data=data, files={'voice': voice_file})
 
         if response.status_code != self.__HTTP_STATUS_OK:
             return None

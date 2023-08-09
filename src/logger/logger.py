@@ -55,7 +55,7 @@ class Logger:
 
             self.log(error_message, 'error')
 
-            self.__telegram.sendMessageToLogChat('[ERROR] ' + error_message)
+            self.__telegram.send_message_to_log_chat('[ERROR] %s' % error_message)
         except Exception as exp:
             if hasattr(exp, 'message'):
                 error_message = exp.message

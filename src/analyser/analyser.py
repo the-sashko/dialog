@@ -17,7 +17,7 @@ class Analyser:
         self.__logger = Logger()
 
     def get_command(self, message: Telegram_Message) -> Union[Command, None]:
-        command = self.__parser.get_command_from_text(message.getText())
+        command = self.__parser.get_command_from_text(message.get_text())
 
         if command is not None:
             return command
@@ -65,7 +65,7 @@ class Analyser:
         ]
 
         prompt.append({'role': 'system', 'content': 'Analyse is user ask for %s. Result should be just true or false' % command_prompt})
-        prompt.append({'role': 'user', 'content': message.getText()})
+        prompt.append({'role': 'user', 'content': message.get_text()})
 
         response = self.__gpt.get(
             prompt,
@@ -84,7 +84,7 @@ class Analyser:
 
         #To-Do: fix analyze with context
 
-        prompt.append({'role': 'user', 'content': message.getText()})
+        prompt.append({'role': 'user', 'content': message.get_text()})
         prompt.append({'role': 'system', 'content': 'Analyse what user asked to say. Result should be just subject of ask'})
 
         response = self.__gpt.get(
@@ -110,7 +110,7 @@ class Analyser:
 
         #To-Do: add context to analyze
  
-        prompt.append({'role': 'user', 'content': message.getText()})
+        prompt.append({'role': 'user', 'content': message.get_text()})
         prompt.append({'role': 'system', 'content': 'Analyse what user asked to draw. Result should be just subject of ask in English'})
 
         response = self.__gpt.get(

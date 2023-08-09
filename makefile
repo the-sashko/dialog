@@ -2,9 +2,14 @@ default:
 	@echo "Invalid target"
 
 install:
-	@echo "Done!"
+	cp -r install/data data
 
-build:
+	mkdir data/download
+	mkdir data/logs
+	mkdir data/tmp
+
+	chmod -R 775 data
+
 	@echo "Done!"
 
 run:

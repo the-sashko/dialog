@@ -2,16 +2,12 @@ import json
 
 from os import getcwd, path
 from typing import Union
-
 from telegram.user import User
 from telegram.chat import Chat
 from telegram.voice import Voice
-
 from settings.settings import Settings
-
 from transcription.transcription import Transcription
 
-#to-do: refactoring code syle
 class Message:
     __LAST_UPDATE_ID_FILE_PATH = '%s/data/telegram_last_update_id.txt'
 
@@ -55,8 +51,8 @@ class Message:
         self.__set_user(values['message']['from'])
         self.__set_chat(values['message']['chat'])
 
-        if self.getUser().is_bot() and self.getUser().get_name() == 'Group':
-            self.getUser().set_name(self.getChat().get_title())
+        if self.get_user().is_bot() and self.get_user().get_name() == 'Group':
+            self.get_user().set_name(self.get_chat().get_title())
 
         if 'text' in values['message']:
             self.__set_text(str(values['message']['text']))
@@ -76,16 +72,16 @@ class Message:
     def get_update_id(self) -> Union[int, None]:
         return self.__update_id
 
-    def getText(self) -> Union[str, None]:
+    def get_text(self) -> Union[str, None]:
         return self.__text
 
     def get_date(self) -> int:
         return self.__date
 
-    def getUser(self) -> User:
+    def get_user(self) -> User:
         return self.__user
 
-    def getChat(self) -> Chat:
+    def get_chat(self) -> Chat:
         return self.__chat
 
     def get_voice(self) -> Union[None, Voice]:
@@ -99,7 +95,7 @@ class Message:
             return False
 
         try:
-            return self.__parent.getUser().get_id() == self.__bot_id
+            return self.__parent.get_user().get_id() == self.__bot_id
         except:
             return False
 

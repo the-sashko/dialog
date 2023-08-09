@@ -59,26 +59,26 @@ class Handler:
         self.__bot_name = bot_config['name']
 
     def do_handle(self, message: Telegram_Message) -> None:
-        if message.getText() == None:
+        if message.get_text() == None:
             return None
         
-        if not message.getChat().is_supported():
+        if not message.get_chat().is_supported():
             return None
 
-        if message.getUser().get_id() == self.__telegram_bot_id:
+        if message.get_user().get_id() == self.__telegram_bot_id:
             return None
 
         reply_to_message_id = message.get_id()
 
-        if (message.getChat().is_private_type()):
+        if (message.get_chat().is_private_type()):
             reply_to_message_id = None
 
         self.__storage.save_message(
-            message.getUser().get_id(),
-            message.getChat().get_id(),
-            message.getUser().get_name(),
-            message.getChat().get_title(),
-            {"role": "user", "content": message.getText()}
+            message.get_user().get_id(),
+            message.get_chat().get_id(),
+            message.get_user().get_name(),
+            message.get_chat().get_title(),
+            {"role": "user", "content": message.get_text()}
         )
 
         if self.__is_ignore(message):
@@ -102,7 +102,7 @@ class Handler:
 
         self.__logger.log('Start retrieving mood from Telegram message')
 
-        mood = self.__analyser.get_mood(message.getText())
+        mood = self.__analyser.get_mood(message.get_text())
 
         self.__logger.log('Found %s mood' % mood)
 
@@ -118,16 +118,16 @@ class Handler:
             audio_file_path = self.__tts.text2audio(reply)
 
             self.__telegram.sendVoice(
-                message.getChat().get_id(),
+                message.get_chat().get_id(),
                 audio_file_path,
                 reply_to_message_id
             )
 
             return None
 
-        self.__telegram.sendMessage(
+        self.__telegram.send_message(
             reply,
-            message.getChat().get_id(),
+            message.get_chat().get_id(),
             reply_to_message_id
         )
 
@@ -136,10 +136,10 @@ class Handler:
         message: Telegram_Message,
         mood: str = 'neutral'
     ) -> Union[str, None]:
-        if message.getText() == None:
+        if message.get_text() is None:
             return None
 
-        reply = self.__markov.getReply(message.getText())
+        reply = self.__markov.getReply(message.get_text())
 
         if reply is None:
             return self.__gpt.get_reply(message, mood)
@@ -150,10 +150,10 @@ class Handler:
         return reply
 
     def __is_ignore(self, message: Telegram_Message) -> bool:        
-        if message.getChat().get_id() == self.__telegram_log_chat_id:
+        if message.get_chat().get_id() == self.__telegram_log_chat_id:
             return True
 
-        if message.getChat().is_private_type() or message.is_reply_to_me():
+        if message.get_chat().is_private_type() or message.is_reply_to_me():
             return False
 
         if message.get_voice() is not None:
@@ -161,10 +161,10 @@ class Handler:
 
         pattern = r'^(.*?)' + re.escape(self.__bot_name) + r'(.*?)$'
 
-        if re.search(pattern, message.getText(), flags=re.IGNORECASE) is not None:
+        if re.search(pattern, message.get_text(), flags=re.IGNORECASE) is not None:
             return False
 
-        if self.__command_parser.get_command_from_text(message.getText()) is not None:
+        if self.__command_parser.get_command_from_text(message.get_text()) is not None:
             return False
 
         if self.__chance.has(self.__CHANCE_TO_REPLY_IN_PUBLIC_CHAT):

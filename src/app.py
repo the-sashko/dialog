@@ -28,7 +28,7 @@ class App:
         time.sleep(self.__LOOP_DELAY)
 
         try:
-            self.__handle_messages(self.__telegram.getMessages())
+            self.__handle_messages(self.__telegram.get_messages())
         except Exception as exp:
             self.__logger.log_error(exp)
 

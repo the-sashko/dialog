@@ -43,15 +43,15 @@ class Gpt:
         mood: str = 'neutral'
     ) -> Union[str, None]:
         context = self.__storage.get_context(
-            message.getUser().get_id(),
-            message.getChat().get_id()
+            message.get_user().get_id(),
+            message.get_chat().get_id()
         )
 
         parent_text = None
 
         prompt = self.__get_prompt(
-            message.getUser().get_name(),
-            message.getText(),
+            message.get_user().get_name(),
+            message.get_text(),
             parent_text,#To-Do fix
             context,
             mood
@@ -63,10 +63,10 @@ class Gpt:
             return reply
 
         self.__storage.save_message(
-            message.getUser().get_id(),
-            message.getChat().get_id(),
-            message.getUser().get_name(),
-            message.getChat().get_title(),
+            message.get_user().get_id(),
+            message.get_chat().get_id(),
+            message.get_user().get_name(),
+            message.get_chat().get_title(),
             {'role': 'assistant', 'content': reply}
         )
 
