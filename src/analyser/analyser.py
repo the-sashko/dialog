@@ -78,6 +78,8 @@ class Analyser:
         return response.lower().strip() == 'true'
 
     def __retrieve_voice_command_value(self, message: Telegram_Message) -> Union[str, None]:
+        return False # fix 'User asked to say ...'
+
         prompt = [
             {'role': 'system', 'content': 'You are a text parser'}
         ]
