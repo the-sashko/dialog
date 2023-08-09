@@ -72,7 +72,7 @@ class Handler:
                 message.getUser().get_id(),
                 message.getChat().get_id(),
                 message.getUser().getName(),
-                message.getChat().getTitle(),
+                message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
 
@@ -100,7 +100,7 @@ class Handler:
             message.getUser().get_id(),
             message.getChat().get_id(),
             message.getUser().getName(),
-            message.getChat().getTitle(),
+            message.getChat().get_title(),
             {'role': 'assistant', 'content': command.get_value()}
         )
 
@@ -121,7 +121,7 @@ class Handler:
                 message.getUser().get_id(),
                 message.getChat().get_id(),
                 message.getUser().getName(),
-                message.getChat().getTitle(),
+                message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
 
@@ -146,7 +146,7 @@ class Handler:
                 message.getUser().get_id(),
                 message.getChat().get_id(),
                 message.getUser().getName(),
-                message.getChat().getTitle(),
+                message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
 
@@ -171,7 +171,7 @@ class Handler:
             message.getUser().get_id(),
             message.getChat().get_id(),
             message.getUser().getName(),
-            message.getChat().getTitle(),
+            message.getChat().get_title(),
             {'role': 'assistant', 'content': 'Надіслав тобі зображення'}
         )
 
@@ -192,7 +192,7 @@ class Handler:
                 message.getUser().get_id(),
                 message.getChat().get_id(),
                 message.getUser().getName(),
-                message.getChat().getTitle(),
+                message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
 
@@ -217,7 +217,7 @@ class Handler:
                 message.getUser().get_id(),
                 message.getChat().get_id(),
                 message.getUser().getName(),
-                message.getChat().getTitle(),
+                message.getChat().get_title(),
                 {'role': 'assistant', 'content': reply}
             )
 
@@ -233,7 +233,7 @@ class Handler:
             message.getUser().get_id(),
             message.getChat().get_id(),
             message.getUser().getName(),
-            message.getChat().getTitle(),
+            message.getChat().get_title(),
             {'role': 'assistant', 'content': 'Надіслав тобі ASCII зображення'}
         )
 

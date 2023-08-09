@@ -62,7 +62,7 @@ class Handler:
         if message.getText() == None:
             return None
         
-        if not message.getChat().isSupported():
+        if not message.getChat().is_supported():
             return None
 
         if message.getUser().get_id() == self.__telegram_bot_id:
@@ -70,14 +70,14 @@ class Handler:
 
         reply_to_message_id = message.get_id()
 
-        if (message.getChat().isPrivateType()):
+        if (message.getChat().is_private_type()):
             reply_to_message_id = None
 
         self.__storage.save_message(
             message.getUser().get_id(),
             message.getChat().get_id(),
             message.getUser().getName(),
-            message.getChat().getTitle(),
+            message.getChat().get_title(),
             {"role": "user", "content": message.getText()}
         )
 
@@ -153,7 +153,7 @@ class Handler:
         if message.getChat().get_id() == self.__telegram_log_chat_id:
             return True
 
-        if message.getChat().isPrivateType() or message.isReplyToMe():
+        if message.getChat().is_private_type() or message.isReplyToMe():
             return False
 
         if message.getVoice() is not None:

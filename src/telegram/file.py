@@ -4,16 +4,15 @@ from settings.settings import Settings
 from typing import Union
 from os import getcwd, path, remove
 
-#to-do: refactoring code syle
 #to-do: add logs
 class File:
     __HTTP_STATUS_OK = 200
 
     __GET_FILE_URL = 'https://api.telegram.org/bot%s/getFile?file_id=%s'
     __DOWNLOAD_FILE_URL = 'https://api.telegram.org/file/bot%s/%s'
-    
+
     __FILE_PATH = '%s/data/download/%s'
-    
+
     __file_path = None
 
     __token = None
@@ -26,16 +25,16 @@ class File:
         file = self.__get_file(file_id)
 
         if file != None and 'file_path' in file:
-            self.__downloadFile(file['file_path'])
-    
-    def getFilePath(self) -> Union[str, None]:
+            self.__download_file(file['file_path'])
+
+    def get_file_path(self) -> Union[str, None]:
         return self.__file_path
 
-    def __downloadFile(self, remote_file_path: str) -> None:
+    def __download_file(self, remote_file_path: str) -> None:
         url = self.__DOWNLOAD_FILE_URL % (self.__token, remote_file_path)
 
         response = requests.get(url)
-        
+
         file_name = url.split('/')[-1]
 
         self.__file_path = self.__FILE_PATH % (getcwd(), file_name)
@@ -61,8 +60,8 @@ class File:
 
         response = json.loads(response.content)
 
-        if not self.__isResponseHaveValidFormat(response) :
-            raise Exception('Telegram Respose Has Invalid Forrmat. Respose: %s' % json.dumps(response))
+        if not self.__is_response_has_valid_format(response) :
+            raise Exception('Telegram respose has invalid forrmat. Respose: %s' % json.dumps(response))
 
         response = response['result']
 
@@ -71,7 +70,7 @@ class File:
 
         return None
 
-    def __isResponseHaveValidFormat(self, response: dict) -> bool:
+    def __is_response_has_valid_format(self, response: dict) -> bool:
         return (
             'ok' in response and
             'result' in response and

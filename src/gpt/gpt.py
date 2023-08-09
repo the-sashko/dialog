@@ -66,7 +66,7 @@ class Gpt:
             message.getUser().get_id(),
             message.getChat().get_id(),
             message.getUser().getName(),
-            message.getChat().getTitle(),
+            message.getChat().get_title(),
             {'role': 'assistant', 'content': reply}
         )
 

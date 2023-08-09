@@ -1,7 +1,5 @@
 import json
 
-#to-do: refactoring code syle
-#to-do: add logs
 class Chat:
     __TYPE_PRIVATE = 'private'
     __TYPE_GROUP = 'group'
@@ -15,46 +13,46 @@ class Chat:
     __type = __TYPE_UNSUPPORTED
 
     def __init__(self, values: dict):
-        if not self.__isValuesHaveValidFormat(values):
-            raise Exception('Telegram Chat Values Have Invalid Format. Values: %s' % json.dumps(values))
+        if not self.__is_values_have_valid_format(values):
+            raise Exception('Telegram chat values have invalid Format. Values: %s' % json.dumps(values))
 
-        self.__setId(int(values['id']))
-        self.__setTitle(values)
-        self.__setType(str(values['type']))
+        self.__set_id(int(values['id']))
+        self.__set_title(values)
+        self.__set_type(str(values['type']))
 
     def get_id(self) -> int:
         return self.__id
 
-    def getTitle(self) -> str:
+    def get_title(self) -> str:
         return self.__title
 
-    def getType(self) -> str:
+    def get_type(self) -> str:
         return self.__type
 
-    def isPrivateType(self) -> str:
+    def is_private_type(self) -> str:
         return self.__type == self.__TYPE_PRIVATE
 
-    def isGroupType(self) -> str:
+    def is_group_type(self) -> str:
         return self.__type == self.__TYPE_GROUP
 
-    def isSupported(self) -> bool:
+    def is_supported(self) -> bool:
         return self.__type != self.__TYPE_UNSUPPORTED
 
-    def __setId(self, id: int) -> None:
+    def __set_id(self, id: int) -> None:
         self.__id = id
 
-    def __setTitle(self, values: dict) -> None:
+    def __set_title(self, values: dict) -> None:
         self.__title = 'chat_%d' % int(values['id'])
 
         if 'title' in values:
             self.__title = str(values['title'])
 
-    def __setType(self, type: str) -> None:
+    def __set_type(self, type: str) -> None:
         if type == self.__REMOTE_TYPE_PRIVATE:
             self.__type = self.__TYPE_PRIVATE
 
         if type == self.__REMOTE_TYPE_GROUP:
             self.__type = self.__TYPE_GROUP
 
-    def __isValuesHaveValidFormat(self, values: dict) -> bool:
+    def __is_values_have_valid_format(self, values: dict) -> bool:
         return 'id' in values and 'type' in values

@@ -57,7 +57,7 @@ class Message:
         self.__set_chat(values['message']['chat'])
 
         if self.getUser().isBot() and self.getUser().getName() == 'Group':
-            self.getUser().setName(self.getChat().getTitle())
+            self.getUser().setName(self.getChat().get_title())
 
         if 'text' in values['message']:
             self.__set_text(str(values['message']['text']))
@@ -164,7 +164,7 @@ class Message:
         if voice == None:
             return None
         
-        file_path = voice.getFile().getFilePath()
+        file_path = voice.getFile().get_file_path()
 
         if file_path == None:
             return None
