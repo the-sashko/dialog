@@ -1,6 +1,6 @@
 from typing import Union
 
-from script.sctript import Script
+from script.script import Script
 from logger.logger import Logger
 
 class Trigger:

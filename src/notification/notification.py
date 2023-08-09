@@ -4,6 +4,7 @@ from typing import Union
 #to-do: add logs
 class Notification:
     def send(
+        self,
         message: str,
         chat_id: int
     ) -> None:
@@ -11,6 +12,7 @@ class Notification:
         return None
 
     def send_all(
+        self,
         message: str
     ) -> None:
         #TO-Do

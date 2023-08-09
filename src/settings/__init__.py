@@ -1,1 +1,1 @@
-__all__ = ["setting"]
+__all__ = ["settings"]
