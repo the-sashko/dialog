@@ -57,16 +57,16 @@ class Storage:
             message
         )
 
-        id = self.__get_primary_key(user_id, chat_id)
+        message_id = self.__get_primary_key(user_id, chat_id)
 
-        thread = self.__get_thread_by_id(id)
+        thread = self.__get_thread_by_id(message_id)
 
         if thread is None:
             thread = []
             thread.append(message)
 
             self.__insert_thead(
-                id,
+                message_id,
                 user_id,
                 chat_id,
                 user_name,
@@ -79,7 +79,7 @@ class Storage:
         thread.append(message)
 
         self.__update_thead(
-            id,
+            message_id,
             thread
         )
 
@@ -211,9 +211,9 @@ class Storage:
         thread = self.__get_thread_by_id(id)
 
         if thread is None:
-            thread = list()
+            thread = []
             thread.append(message)
-            
+
             self.__insert_thead(
                 id,
                 0,
@@ -278,7 +278,7 @@ class Storage:
 
     def __get_thread_by_user_id(
         self,
-         user_id: int
+        user_id: int
     ) -> Union[list, None]:
         id = self.__get_primary_key(user_id, 0)
 
