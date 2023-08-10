@@ -76,7 +76,7 @@ class Script:
         raise Exception(f'Unknown script {name}')
 
     def __do_none(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
@@ -99,7 +99,7 @@ class Script:
         )
 
     def __do_test(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute test script. Invalid data provided')
 
             return None
@@ -126,7 +126,7 @@ class Script:
         )
 
     def __do_hello(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute hello script. Invalid data provided')
 
             return None
@@ -153,7 +153,7 @@ class Script:
         )
 
     def __do_about_me(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute about_me script. Invalid data provided')
 
             return None
@@ -180,7 +180,7 @@ class Script:
         )
 
     def __do_random_text(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data:
+        if data is None or 'chat_id' not in data:
             self.__logger.log_error('Can not execute random_text script. Invalid data provided')
 
             return None
@@ -206,7 +206,7 @@ class Script:
         )
 
     def __do_random_voice(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data:
+        if data is None or 'chat_id' not in data:
             self.__logger.log_error('Can not execute random_voice script. Invalid data provided')
 
             return None
@@ -236,7 +236,7 @@ class Script:
         )
 
     def __do_random_image(self, data: Union[dict, None] = None) -> None:
-        if data is None or not 'chat_id' in data:
+        if data is None or 'chat_id' not in data:
             self.__logger.log_error('Can not execute random_image script. Invalid data provided')
 
             return None

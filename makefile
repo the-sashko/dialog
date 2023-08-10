@@ -1,7 +1,7 @@
 default:
 	@echo "Invalid target"
 
-install:
+init:
 	cp -r install/data data
 
 	mkdir data/download

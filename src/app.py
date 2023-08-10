@@ -19,7 +19,7 @@ class App:
         self.__logger = Logger()
 
     def run(self) -> None:
-        self.__logger.log('Strating...')
+        self.__logger.log('Starting...')
 
         while True:
             self.__loop()
