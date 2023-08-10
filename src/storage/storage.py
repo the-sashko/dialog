@@ -272,17 +272,17 @@ class Storage:
         self,
         chat_id: int
     ) -> Union[list, None]:
-        id = self.__get_thread_id(0, chat_id)
+        thread_id = self.__get_thread_id(0, chat_id)
 
-        return self.__get_thread_by_id(id)
+        return self.__get_thread_by_id(thread_id)
 
     def __get_thread_by_user_id(
         self,
         user_id: int
     ) -> Union[list, None]:
-        id = self.__get_thread_id(user_id, 0)
+        thread_id = self.__get_thread_id(user_id, 0)
 
-        return self.__get_thread_by_id(id)
+        return self.__get_thread_by_id(thread_id)
 
     def __get_thread_by_user_id_and_chat_id(
         self,
