@@ -61,7 +61,7 @@ class File:
         response = json.loads(response.content)
 
         if not self.__is_response_has_valid_format(response) :
-            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
+            raise Exception(f'Telegram respose has invalid format. Respose: {json.dumps(response)}')
 
         response = response['result']
 

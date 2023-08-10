@@ -14,7 +14,7 @@ class Chat:
 
     def __init__(self, values: dict):
         if not self.__is_values_have_valid_format(values):
-            raise Exception('Telegram chat values have invalid Format. Values: %s' % json.dumps(values))
+            raise Exception(f'Telegram chat values have invalid Format. Values: {json.dumps(values)}')
 
         self.__set_id(int(values['id']))
         self.__set_title(values)
@@ -42,7 +42,9 @@ class Chat:
         self.__id = id
 
     def __set_title(self, values: dict) -> None:
-        self.__title = 'chat_%d' % int(values['id'])
+        id = values['id']
+
+        self.__title = f'chat_{id}'
 
         if 'title' in values:
             self.__title = str(values['title'])

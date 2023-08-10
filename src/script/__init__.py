@@ -1,2 +1,1 @@
-'''Script module'''
-__all__ = ["script"]
+__all__ = ['script']

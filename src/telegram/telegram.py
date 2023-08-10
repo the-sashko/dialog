@@ -72,7 +72,7 @@ class Telegram:
         replay_to_message_id_param = ''
 
         if replay_to_message_id is not None:
-            replay_to_message_id_param = '&reply_to_message_id=%s' % replay_to_message_id
+            replay_to_message_id_param = f'&reply_to_message_id={replay_to_message_id}'
 
         url = self.__SEND_PHOTO_URL % (self.__token, replay_to_message_id_param)
 
@@ -85,7 +85,7 @@ class Telegram:
         response = json.loads(response.content)
 
         if not self.__is_response_has_valid_format(response) :
-            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
+            raise Exception(f'Telegram respose has invalid format. Respose: {json.dumps(response)}')
 
         response = response['result']
 
@@ -105,7 +105,7 @@ class Telegram:
         replay_to_message_id_param = ''
 
         if replay_to_message_id is not None:
-            replay_to_message_id_param = '&reply_to_message_id=%s' % replay_to_message_id
+            replay_to_message_id_param = f'&reply_to_message_id={replay_to_message_id}'
 
         url = self.__SEND_VOICE_URL % (self.__token, replay_to_message_id_param)
 
@@ -118,7 +118,7 @@ class Telegram:
         response = json.loads(response.content)
 
         if not self.__is_response_has_valid_format(response) :
-            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
+            raise Exception(f'Telegram respose has invalid format. Respose: {json.dumps(response)}')
 
         response = response['result']
 
@@ -138,7 +138,7 @@ class Telegram:
         response = json.loads(response.content)
 
         if not self.__is_response_has_valid_format(response) :
-            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
+            raise Exception(f'Telegram respose has invalid format. Respose: {json.dumps(response)}')
 
         response = response['result']
 
@@ -161,7 +161,7 @@ class Telegram:
             markdown_url_param = 'parse_mode=markdown&'
 
         if replay_to_message_id is not None:
-            replay_to_message_id_param = '&reply_to_message_id=%s' % replay_to_message_id
+            replay_to_message_id_param = f'&reply_to_message_id={replay_to_message_id}'
 
         url = self.__SEND_MESSAGE_URL % (self.__token, markdown_url_param, chat_id, message, replay_to_message_id_param)
 
@@ -173,7 +173,7 @@ class Telegram:
         response = json.loads(response.content)
 
         if not self.__is_response_has_valid_format(response) :
-            raise Exception('Telegram respose has invalid format. Respose: %s' % json.dumps(response))
+            raise Exception(f'Telegram respose has invalid format. Respose: {json.dumps(response)}')
 
         response = response['result']
 

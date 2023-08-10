@@ -1,2 +1,1 @@
-'''Trigger module'''
-__all__ = ["trigger"]
+__all__ = ['trigger']

@@ -7,7 +7,7 @@ class User:
 
     def __init__(self, values: dict):
         if not self.__is_values_have_valid_format(values):
-            raise Exception('Telegram user values have invalid format. Values: %s' % json.dumps(values))
+            raise Exception(f'Telegram user values have invalid format. Values: {json.dumps(values)}')
 
         self.__set_id(int(values['id']))
         self.__set_name(values)
@@ -29,7 +29,9 @@ class User:
         self.__id = id
 
     def __set_name(self, values: dict) -> None:
-        self.set_name('user_%d' % int(values['id']))
+        id = values['id']
+
+        self.set_name(f'user_{id}')
 
         if 'username' in values:
             self.set_name(str(values['username']))
@@ -38,7 +40,9 @@ class User:
             self.set_name(str(values['first_name']))
 
         if 'last_name' in values:
-            self.set_name('%s %s' % (str(values['first_name']), str(values['last_name'])))
+            first_name = values['first_name']
+            last_name = values['last_name']
+            self.set_name(f'{first_name} {last_name}')
 
         if 'last_name' in values and not 'first_name' in values:
             self.set_name(str(values['last_name']))

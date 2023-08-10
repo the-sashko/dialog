@@ -1,2 +1,1 @@
-'''Telegram module'''
-__all__ = ["telegram"]
+__all__ = ['telegram']

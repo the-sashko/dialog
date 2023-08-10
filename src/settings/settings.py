@@ -32,7 +32,7 @@ class Settings:
 
     def __get_config(self, config_name: str) -> dict:
         if not config_name in self.__data:
-            raise Exception('Config %s is not exists' % config_name)
+            raise Exception(f'Config {config_name} is not exists')
 
         return self.__data[config_name]
 
@@ -40,7 +40,7 @@ class Settings:
         config_file_path = self.__get_config_file_path(config_name)
 
         if not path.exists(config_file_path) or not path.isfile(config_file_path):
-            raise Exception('Config file %s not found' % config_name)
+            raise Exception(f'Config file {config_name} not found')
 
         configFile = open(config_file_path, 'r')
 

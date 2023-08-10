@@ -25,9 +25,7 @@ class Trigger:
         data: Union[dict, None] = None
     ) -> None:
         if name is not None:
-            self.__logger.log(
-                'Fired %s trigger' % name
-            )
+            self.__logger.log(f'Fired {name} trigger')
 
         if name == self.TEST_TRIGGER:
             self.__script.run(Script.TEST_SCRIPT, data)
@@ -64,4 +62,4 @@ class Trigger:
 
             return None
         
-        raise Exception('Unknown trigger %s' % name)
+        raise Exception(f'Unknown trigger {name}')

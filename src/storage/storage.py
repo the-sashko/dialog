@@ -370,7 +370,7 @@ class Storage:
         if chat_id == 0:
             chat_id = 'x'
 
-        return '%s_%s' % (str(user_id), str(chat_id))
+        return f'{user_id}_{chat_id}'
 
     def __get_thread_by_id(self, id: str) -> Union [list, None]:
         sql = '''

@@ -1,9 +1,7 @@
-import numpy
 import json
 import os
-
 from typing import Union
-
+import numpy
 from markov.dictionary import Dictionary
 from markov.formatter import Formatter
 from markov.tokenizer import Tokenizer
@@ -116,7 +114,7 @@ class Markov():
 
             while chunk_length <= self.__MAX_CHUNK_LENGTH:
                 self.__logger.log(
-                    'Start splitting text on chunks (length %s )' % str(chunk_length)
+                    f'Start splitting text on chunks (length {chunk_length})'
                 )
 
                 chunk_counts = self.__tokenizer.make_chunked_text(
@@ -125,7 +123,7 @@ class Markov():
                 )
 
                 self.__logger.log(
-                    'End splitting text on %s chunks (%s chunks is New)' % (str(chunk_counts[0]), str(chunk_counts[1]))
+                    f'End splitting text on {chunk_counts[0]} chunks ({chunk_counts[1]} chunks is New)'
                 )
 
                 chunk_length += 1

@@ -1,2 +1,1 @@
-'''TTS module'''
-__all__ = ["tts"]
+__all__ = ['tts']

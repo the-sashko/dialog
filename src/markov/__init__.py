@@ -1,2 +1,1 @@
-'''Markov module'''
-__all__ = ["markov"]
+__all__ = ['markov']

@@ -9,7 +9,7 @@ class Voice:
 
     def __init__(self, values: dict):
         if not self.__is_values_have_valid_format(values):
-            raise Exception('Telegram voice values have invalid format. Values: %s' % json.dumps(values))
+            raise Exception(f'Telegram voice values have invalid format. Values: {json.dumps(values)}')
 
         self.__set_id(values['file_unique_id'])
         self.__set_mime_type(values['mime_type'])

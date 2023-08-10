@@ -36,7 +36,7 @@ class Script:
         name: str,
         data: Union[dict, None] = None
     ) -> None:
-        self.__logger.log('Running %s script' % name)
+        self.__logger.log(f'Running {name} script')
 
         if name == self.TEST_SCRIPT:
             self.__do_test(data)
@@ -73,7 +73,7 @@ class Script:
 
             return None
 
-        raise Exception('Unknown script %s' % name)
+        raise Exception(f'Unknown script {name}')
 
     def __do_none(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
@@ -251,7 +251,7 @@ class Script:
                 message.get_chat().get_id(),
                 message.get_user().get_name(),
                 message.get_chat().get_title(),
-                {'role': 'assistant', 'content': 'Дивись: %s' % prompt}
+                {'role': 'assistant', 'content': f'Дивись: {prompt}'}
             )
 
         image_file_path = self.__image.create_image(prompt)

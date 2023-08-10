@@ -44,7 +44,7 @@ class Message:
             values = dict({'message': values})
 
         if not self.__is_values_have_valid_message_format(values):
-            raise Exception('Telegram message values have invalid format. Values: %s' % json.dumps(values))
+            raise Exception(f'Telegram message values have invalid format. Values: {json.dumps(values)}')
 
         self.__set_id(int(values['message']['message_id']))
         self.__set_date(int(values['message']['date']))

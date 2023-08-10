@@ -1,2 +1,1 @@
-'''Settings module'''
-__all__ = ["settings"]
+__all__ = ['settings']
