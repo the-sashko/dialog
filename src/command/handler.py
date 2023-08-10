@@ -55,15 +55,13 @@ class Handler:
 
         self.__logger.log('End handling commands')
 
-        return None
-
     def __do_command_voice(
             self,
             command: Command,
             message: TelegramMessage,
             reply_to_message_id: Union[int, None]
     ) -> None:
-        if command.get_value() == None:
+        if command.get_value() is None:
             self.__logger.log(f'Command {Command.VOICE} does not have value')
 
             reply = self.__gpt.paraphrase('Я не буду це казати', 'angry')#TO-DO: to const
@@ -140,7 +138,10 @@ class Handler:
         if image_path is None:
             self.__logger.log('Image generating is failed')
 
-            reply = self.__gpt.paraphrase('Вибач, братан, але я не зміг це намалювати. Може спрбуємо намалювати щось інше?', 'apologies')#TO-DO: to const
+            reply = self.__gpt.paraphrase(
+                'Вибач, братан, але я не зміг це намалювати. Може спрбуємо намалювати щось інше?',
+                'apologies'
+            )#TO-DO: to const
 
             self.__storage.save_message(
                 message.get_user().get_id(),
@@ -211,7 +212,10 @@ class Handler:
         if ascii_image is None:
             self.__logger.log('Generating ASCII is failed')
 
-            reply = self.__gpt.paraphrase('Вибач, братан, але я не зміг це зробити. Може спрбуємо намалювати щось інше?', 'apologies')#TO-DO: to const
+            reply = self.__gpt.paraphrase(
+                'Вибач, братан, але я не зміг це зробити. Може спрбуємо намалювати щось інше?',
+                'apologies'
+            )#TO-DO: to const
 
             self.__storage.save_message(
                 message.get_user().get_id(),

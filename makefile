@@ -12,6 +12,9 @@ install:
 
 	@echo "Done!"
 
+build:
+	docker-compose build --no-cache
+
 run:
 	@python3 src/app.py
 
