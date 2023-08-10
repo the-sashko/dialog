@@ -22,7 +22,10 @@ class Handler:
     #TO-DO fit chances
     __CHANCE_TO_MODIFY_MARKOV_REPLY = 5
     __CHANCE_TO_REPLY_IN_PUBLIC_CHAT = 2
-    __CHANCE_TO_REPLY_IN_AUDIO = 0
+    __CHANCE_TO_REPLY_IN_AUDIO = 1
+    __CHANCE_TO_RANDOM_TEST = 2
+    __CHANCE_TO_RANDOM_VOICE = 2
+    __CHANCE_TO_RANDOM_IMAGE = 2
 
     __telegram = None
     __markov = None
@@ -62,96 +65,114 @@ class Handler:
         self.__bot_name = bot_config['name']
 
     def do_handle(self, message: Telegram_Message) -> None:
-        if message.get_text() == None:
-            return None
+        try:
+            if message.get_text() == None:
+                return None
+
+            if not message.get_chat().is_supported():
+                return None
+
+            if message.get_user().get_id() == self.__telegram_bot_id:
+                return None
+
+            reply_to_message_id = message.get_id()
+
+            if (message.get_chat().is_private_type()):
+                reply_to_message_id = None
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {"role": "user", "content": message.get_text()}
+            )
+
+            trigger_name = self.__get_random_trigger(message)
+
+            if self.__is_ignore(message) and trigger_name is None:
+                return None
+
+            self.__logger.log('Start retrieving trigger from Telegram message')
+
+            if trigger_name is None:
+                trigger_name = self.__analyser.get_trigger(message)
+
+            if trigger_name is not None:
+                self.__logger.log(f'Found {trigger_name} trigger')
+
+            self.__logger.log('End retrieving trigger from Telegram message')
+
+            if trigger_name is not None:
+                return self.__trigger.fire(
+                    trigger_name,
+                    {
+                        'chat_id': message.get_chat().get_id(),
+                        'reply_to_message_id': reply_to_message_id,
+                        'message': message
+                    }
+                )
+
+            self.__logger.log('Start retrieving command from Telegram message')
+
+            command = self.__analyser.get_command(message)
+
+            if command is not None:
+                self.__logger.log(f'Found {command.get_type()} command')
+
+            self.__logger.log('End retrieving command from Telegram message')
+
+            if command is not None:
+                return self.__command_handler.do_handle(
+                    command,
+                    message,
+                    reply_to_message_id
+                )
+
+            self.__logger.log('Start retrieving mood from Telegram message')
+
+            mood = self.__analyser.get_mood(message.get_text())
+
+            self.__logger.log(f'Found {mood} mood')
+
+            self.__logger.log('End retrieving mood from Telegram message')
+
+            reply = self.__get_reply(message, mood)
+            reply = self.__post_process(reply)
+
+            if reply == None:
+                return None
         
-        if not message.get_chat().is_supported():
-            return None
+            if self.__is_reply_in_audio(message):
+                audio_file_path = self.__tts.text2audio(reply)
 
-        if message.get_user().get_id() == self.__telegram_bot_id:
-            return None
+                self.__telegram.send_voice(
+                    message.get_chat().get_id(),
+                    audio_file_path,
+                    reply_to_message_id
+                )
 
-        reply_to_message_id = message.get_id()
+                return None
 
-        if (message.get_chat().is_private_type()):
-            reply_to_message_id = None
+            self.__telegram.send_message(
+                reply,
+                message.get_chat().get_id(),
+                reply_to_message_id
+            )
+        except Exception as exp:
+            self.__logger.log_error(exp)
 
-        self.__storage.save_message(
-            message.get_user().get_id(),
-            message.get_chat().get_id(),
-            message.get_user().get_name(),
-            message.get_chat().get_title(),
-            {"role": "user", "content": message.get_text()}
-        )
+            if not self.__is_mandatory_reply(message):
+                return None
 
-        if self.__is_ignore(message):
-            return None
-
-        self.__logger.log('Start retrieving trigger from Telegram message')
-
-        trigger_name = self.__analyser.get_trigger(message)
-
-        if trigger_name is not None:
-            self.__logger.log(f'Found {trigger_name} trigger')
-
-        self.__logger.log('End retrieving trigger from Telegram message')
-
-        if trigger_name is not None:
-            return self.__trigger.fire(
-                trigger_name,
+            self.__trigger.fire(
+                self.__trigger.NONE_TRIGGER,
                 {
                     'chat_id': message.get_chat().get_id(),
                     'reply_to_message_id': reply_to_message_id,
                     'message': message
                 }
             )
-
-        self.__logger.log('Start retrieving command from Telegram message')
-
-        command = self.__analyser.get_command(message)
-
-        if command is not None:
-            self.__logger.log(f'Found {command.get_type()} command')
-
-        self.__logger.log('End retrieving command from Telegram message')
-
-        if command is not None:
-            return self.__command_handler.do_handle(
-                command,
-                message,
-                reply_to_message_id
-            )
-
-        self.__logger.log('Start retrieving mood from Telegram message')
-
-        mood = self.__analyser.get_mood(message.get_text())
-
-        self.__logger.log(f'Found {mood} mood')
-
-        self.__logger.log('End retrieving mood from Telegram message')
-
-        reply = self.__get_reply(message, mood)
-        reply = self.__post_process(reply)
-
-        if reply == None:
-            return None
-        
-        if self.__is_reply_in_audio(message):
-            audio_file_path = self.__tts.text2audio(reply)
-
-            self.__telegram.send_voice(
-                message.get_chat().get_id(),
-                audio_file_path,
-                reply_to_message_id
-            )
-
-            return None
-
-        self.__telegram.send_message(
-            reply,
-            message.get_chat().get_id(),
-            reply_to_message_id
-        )
 
     def __get_reply(
         self,
@@ -194,6 +215,9 @@ class Handler:
 
         return True
 
+    def __is_mandatory_reply(self, message: Telegram_Message) -> bool:
+        return message.get_chat().is_private_type() or message.is_reply_to_me()
+
     def __is_reply_in_audio(self, message: Telegram_Message) -> bool:
         if message.get_voice() is not None:
             return True
@@ -211,3 +235,22 @@ class Handler:
     ) -> Union[str, None]:
         #To-Do
         return text
+
+    def __get_random_trigger(self, message: Telegram_Message) -> Union[str, None]:
+        if (
+            message.get_chat().get_id() == self.__telegram_log_chat_id or
+            not message.get_chat().is_group_type() or
+            message.is_reply_to_me()
+        ):
+            return None
+
+        if self.__chance.get(self.__CHANCE_TO_RANDOM_TEST):
+            return self.__trigger.RANDOM_TEXT_TRIGGER
+
+        if self.__chance.get(self.__CHANCE_TO_RANDOM_VOICE):
+            return self.__trigger.RANDOM_VOICE_TRIGGER
+
+        if self.__chance.get(self.__CHANCE_TO_RANDOM_IMAGE):
+            return self.__trigger.RANDOM_IMAGE_TRIGGER
+
+        return None

@@ -76,7 +76,7 @@ class Script:
         raise Exception(f'Unknown script {name}')
 
     def __do_none(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
+        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
@@ -99,8 +99,8 @@ class Script:
         )
 
     def __do_test(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
-            self.__logger.log_error('Can not execute none script. Invalid data provided')
+        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+            self.__logger.log_error('Can not execute test script. Invalid data provided')
 
             return None
 
@@ -126,8 +126,8 @@ class Script:
         )
 
     def __do_hello(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
-            self.__logger.log_error('Can not execute none script. Invalid data provided')
+        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+            self.__logger.log_error('Can not execute hello script. Invalid data provided')
 
             return None
 
@@ -153,8 +153,8 @@ class Script:
         )
 
     def __do_about_me(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
-            self.__logger.log_error('Can not execute none script. Invalid data provided')
+        if data is None or not 'chat_id' in data or not 'reply_to_message_id' in data:
+            self.__logger.log_error('Can not execute about_me script. Invalid data provided')
 
             return None
 
@@ -180,8 +180,8 @@ class Script:
         )
 
     def __do_random_text(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id':
-            self.__logger.log_error('Can not execute none script. Invalid data provided')
+        if data is None or not 'chat_id' in data:
+            self.__logger.log_error('Can not execute random_text script. Invalid data provided')
 
             return None
 
@@ -206,14 +206,16 @@ class Script:
         )
 
     def __do_random_voice(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id':
-            self.__logger.log_error('Can not execute none script. Invalid data provided')
+        if data is None or not 'chat_id' in data:
+            self.__logger.log_error('Can not execute random_voice script. Invalid data provided')
 
             return None
 
-        reply = self.__gpt.paraphrase(
-            'Агов, як справи, сучки!'#To-Do: implement random
-        )
+        #reply = self.__gpt.paraphrase(
+        reply = 'Увага! Повітряна тривога! Летить пакет із гівноом! Пройдіть в найближче укриття! Увага! Повітряна тривога! Летить пакет із гівноом!'#To-Do: implement random
+        #)
+        reply = 'Путін - gun done'#To-Do: implement random
+
 
         if 'message' in data and type(data['message']) == Telegram_Message:
             message = data['message']
@@ -234,8 +236,8 @@ class Script:
         )
 
     def __do_random_image(self, data: Union[dict, None] = None) -> None:
-        if data is None or 'chat_id':
-            self.__logger.log_error('Can not execute none script. Invalid data provided')
+        if data is None or not 'chat_id' in data:
+            self.__logger.log_error('Can not execute random_image script. Invalid data provided')
 
             return None
 
