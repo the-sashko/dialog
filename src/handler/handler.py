@@ -166,7 +166,7 @@ class Handler:
         if reply is None:
             return self.__gpt.get_reply(message, mood)
 
-        if self.__chance.has(self.__CHANCE_TO_MODIFY_MARKOV_REPLY):
+        if self.__chance.get(self.__CHANCE_TO_MODIFY_MARKOV_REPLY):
             reply = self.__gpt.paraphrase(reply, mood)
 
         return reply
@@ -189,7 +189,7 @@ class Handler:
         if self.__command_parser.get_command_from_text(message.get_text()) is not None:
             return False
 
-        if self.__chance.has(self.__CHANCE_TO_REPLY_IN_PUBLIC_CHAT):
+        if self.__chance.get(self.__CHANCE_TO_REPLY_IN_PUBLIC_CHAT):
             return False
 
         return True
@@ -200,7 +200,7 @@ class Handler:
         
         #TO-DO: parse voice keywords
 
-        if self.__chance.has(self.__CHANCE_TO_REPLY_IN_AUDIO):
+        if self.__chance.get(self.__CHANCE_TO_REPLY_IN_AUDIO):
             return True
 
         return False
