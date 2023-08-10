@@ -35,7 +35,7 @@ class Message:
 
         self.__transcribe_voice()
 
-        if (self.get_update_id() != None):
+        if self.get_update_id() is not None:
             self.__save_last_update_id(self.get_update_id())
 
     def __map_message_values(self, values: dict):
@@ -156,17 +156,17 @@ class Message:
     def __transcribe_voice(self) -> None:
         voice = self.get_voice()
 
-        if voice == None:
+        if voice is None:
             return None
         
         file_path = voice.get_file().get_file_path()
 
-        if file_path == None:
+        if file_path is None:
             return None
         
         text = self.__transcription.transcribe(file_path)
 
-        if text == None:
+        if text is None:
             return None
 
         self.__set_text(text)
@@ -179,8 +179,8 @@ class Message:
             'date' in values['message'] and
             'from' in values['message'] and
             'chat' in values['message'] and
-            type(values['message']['from']) == dict and
-            type(values['message']['chat']) == dict
+            isinstance(values['message']['from'], dict) and
+            isinstance(values['message']['chat'], dict) 
         )
 
     @staticmethod
