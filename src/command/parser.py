@@ -21,8 +21,12 @@ class Parser:
 
         return None
 
-    def __get_command_by_type(self, text: str, type: str) -> Union[Command, None]:
-        pattern = r'^' + re.escape(type) + r'(.*?)$'
+    def __get_command_by_type(
+        self,
+        text: str,
+        command_type: str
+    ) -> Union[Command, None]:
+        pattern = r'^' + re.escape(command_type) + r'(.*?)$'
 
         if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
             value = re.sub(pattern, r'\g<1>', text, 0, re.IGNORECASE)
@@ -32,6 +36,6 @@ class Parser:
             if value == '':
                 value = None
 
-            return Command(type, value)
+            return Command(command_type, value)
 
         return None

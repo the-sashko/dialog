@@ -9,8 +9,8 @@ class Command:
 
     __value = None
 
-    def __init__(self, type: Union[str, None], value: Union[str, None]):
-        self.__type = type #to-do: add validation
+    def __init__(self, commant_type: Union[str, None], value: Union[str, None]):
+        self.__type = commant_type #to-do: add validation
         self.__value = value 
 
     def get_type(self) -> Union[str, None]:

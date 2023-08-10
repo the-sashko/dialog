@@ -25,17 +25,15 @@ class Analyser:
 
         self.__logger.log('Check voice command')
         if (self.__is_voice_command(message)):
-            type = Command.VOICE
             value = self.__retrieve_voice_command_value(message)
 
-            return Command(type, value)
+            return Command(Command.VOICE, value)
 
         self.__logger.log('Check image command')
         if (self.__is_image_command(message)):
-            type = Command.IMAGE
             value = self.__retrieve_image_command_value(message)
 
-            return Command(type, value)
+            return Command(Command.IMAGE, value)
 
         return None
 
