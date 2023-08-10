@@ -21,7 +21,7 @@ class App:
     def run(self) -> None:
         self.__logger.log('Strating...')
 
-        while(True):
+        while True:
             self.__loop()
 
     def __loop(self) -> None:
@@ -37,9 +37,10 @@ class App:
             self.__handle_message(message)
 
     def __handle_message(self, message: Telegram_Message) -> None:
-            self.__logger.log('Start handling message from Telegram')
-            self.__handler.do_handle(message)
-            self.__logger.log('End handling message from Telegram')
+        self.__logger.log('Start handling message from Telegram')
+        self.__handler.do_handle(message)
+        self.__logger.log('End handling message from Telegram')
+
 
 if __name__ == '__main__':
     App().run()
