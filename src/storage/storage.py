@@ -85,7 +85,7 @@ class Storage:
 
         return None
 
-    def update_chunks_by_id(self, id: str, value: str) -> None:
+    def update_chunks_by_id(self, chunk_id: str, value: str) -> None:
         sql = '''
             UPDATE chunks
             SET value = :value
@@ -93,7 +93,7 @@ class Storage:
         '''
 
         row = {
-            'id': id,
+            'id': chunk_id,
             'value': value
         }
 
@@ -103,7 +103,7 @@ class Storage:
 
         self.__commit()
 
-    def get_word_from_dictionary_by_id(self, id: int) -> Union[str, None]:
+    def get_word_from_dictionary_by_id(self, dictionary_id: int) -> Union[str, None]:
         sql = '''
             SELECT word
             FROM dictionary
@@ -112,7 +112,7 @@ class Storage:
 
         cursor = self.__get_cursor()
 
-        cursor.execute(sql, {'id': id})
+        cursor.execute(sql, {'id': dictionary_id})
 
         row = cursor.fetchone()
 
@@ -141,7 +141,7 @@ class Storage:
 
     def get_value_from_chunks_by_id(
         self,
-        id: str
+        chunk_id: str
     ) -> Union[str, None]:
         sql = '''
             SELECT value
@@ -151,7 +151,7 @@ class Storage:
 
         cursor = self.__get_cursor()
 
-        cursor.execute(sql, {'id': id})
+        cursor.execute(sql, {'id': chunk_id})
 
         row = cursor.fetchone()
 
@@ -181,7 +181,7 @@ class Storage:
 
     def insert_row_to_chunks(
         self,
-        id: str,
+        chunk_id: str,
         value: str
     ) -> None:
         sql = '''
@@ -192,7 +192,7 @@ class Storage:
         cursor = self.__get_cursor()
 
         row = {
-            'id': id,
+            'id': chunk_id,
             'value': value
         }
 
