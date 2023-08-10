@@ -37,7 +37,7 @@ class Markov():
 
         tokenized_text = self.__get_chain_by_text(text)
 
-        if tokenized_text == None:
+        if tokenized_text is None:
             self.__logger.log('End creating markov chain with 0 tokens')
             return None
 
@@ -55,7 +55,11 @@ class Markov():
             if token == self.__dictionary.get_stop_id() :
                 tokenized_text[token_index] = self.__dictionary.stop
 
-            if token != self.__dictionary.get_start_id() and token != self.__dictionary.get_end_id() and token != self.__dictionary.get_stop_id() :
+            if (
+                token != self.__dictionary.get_start_id() and
+                token != self.__dictionary.get_end_id() and
+                token != self.__dictionary.get_stop_id()
+            ):
                 tokenized_text[token_index] = self.__dictionary.get_word_by_id(token)
 
         self.__logger.log('End translating tokens')
@@ -91,7 +95,7 @@ class Markov():
 
             self.__logger.log('Start parsing text')
 
-            self.__logger.log('Start formatting raw Ttxt')            
+            self.__logger.log('Start formatting raw txt')
 
             raw_file = open(raw_file_path, 'r')
             raw_text = raw_file.read()
@@ -147,7 +151,7 @@ class Markov():
     def __get_chunk_by_id(self, id: str) -> Union[list, None]:
         chunk = self.__storage.get_value_from_chunks_by_id(id)
 
-        if chunk == None:
+        if chunk is None:
             return None
 
         return json.loads(chunk)
@@ -162,10 +166,10 @@ class Markov():
             tokenized_text
         )
 
-        if chunk == None and len(chain) == 0:
+        if chunk is None and len(chain) == 0:
             return None
 
-        if chunk == None and len(tokenized_text) > 1:
+        if chunk is None and len(tokenized_text) > 1:
             del tokenized_text[0]
 
             return self.__get_chain_by_tokenized_text(
@@ -174,7 +178,7 @@ class Markov():
                 sentence_count
             )
 
-        if chunk == None:
+        if chunk is None:
             return chain
 
         token = int(numpy.random.choice(chunk))
