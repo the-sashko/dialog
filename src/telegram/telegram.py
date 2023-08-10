@@ -1,8 +1,7 @@
-import requests
 import json
-
-from telegram.message import Message
 from typing import Union
+import requests
+from telegram.message import Message
 from settings.settings import Settings
 
 #to-do: add logs
@@ -13,7 +12,7 @@ class Telegram:
 
     __GET_MESSAGES_URL = 'https://api.telegram.org/bot%s/getUpdates?offset=%d&limit=%d&allowed_updates=["message"]'
     __SEND_MESSAGE_URL = 'https://api.telegram.org/bot%s/sendMessage?%schat_id=%s&text=%s%s'
-    __SEND_PHOTO_URL = 'https://api.telegram.org/bot%s/sendPhoto?parse_mode=markdown%s'    
+    __SEND_PHOTO_URL = 'https://api.telegram.org/bot%s/sendPhoto?parse_mode=markdown%s'
     __SEND_VOICE_URL = 'https://api.telegram.org/bot%s/sendVoice?parse_mode=markdown%s'
 
     __log_chat_id = None
@@ -51,7 +50,7 @@ class Telegram:
         response_rows = self.__get()
 
         if response_rows is None :
-            return list()
+            return []
 
         messages = list(map(lambda response_row : Message(response_row), response_rows))
 
@@ -66,7 +65,7 @@ class Telegram:
     ) -> Union[Message, None]:
         data = {'chat_id': chat_id}
 
-        if caption != None:
+        if caption is not None:
             data = {'chat_id': chat_id, 'caption': caption}
 
         replay_to_message_id_param = ''
@@ -187,7 +186,7 @@ class Telegram:
             'ok' in response and
             'result' in response and
             (
-                type(response['result']) == list or
-                type(response['result']) == dict
+                isinstance(response['result'], list) or
+                isinstance(response['result'], dict)
             )
         )
