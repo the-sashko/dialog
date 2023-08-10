@@ -39,12 +39,15 @@ class Message:
             self.__save_last_update_id(self.get_update_id())
 
     def __map_message_values(self, values: dict):
-        # if message index is missing but result exists (in case when it is respose after sending message)
+        # case if index 'message' is missing in payload but index 'result' exists
+        # it happens if response after sending message
         if 'message' not in values and 'message_id' in values:
             values = dict({'message': values})
 
         if not self.__is_values_have_valid_message_format(values):
-            raise Exception(f'Telegram message values have invalid format. Values: {json.dumps(values)}')
+            raise Exception(
+                f'Telegram message values have invalid format. Values: {json.dumps(values)}'
+            )
 
         self.__set_id(int(values['message']['message_id']))
         self.__set_date(int(values['message']['date']))
@@ -129,8 +132,8 @@ class Message:
         last_update_id_file.write(str(last_update_id))
         last_update_id_file.close()
 
-    def __set_id(self, id: int) -> None:
-        self.__id = id
+    def __set_id(self, message_id: int) -> None:
+        self.__id = message_id
 
     def __set_update_id(self, update_id: int) -> None:
         self.__update_id = update_id
@@ -158,7 +161,7 @@ class Message:
 
         if voice is None:
             return None
-        
+    
         file_path = voice.get_file().get_file_path()
 
         if file_path is None:
@@ -174,13 +177,13 @@ class Message:
     def __is_values_have_valid_message_format(self, values: dict) -> bool:
         return (
             'message' in values and
-            type(values['message']) == dict and
+            isinstance(values['message'], dict) and
             'message_id' in values['message'] and
             'date' in values['message'] and
             'from' in values['message'] and
             'chat' in values['message'] and
             isinstance(values['message']['from'], dict) and
-            isinstance(values['message']['chat'], dict) 
+            isinstance(values['message']['chat'], dict)
         )
 
     @staticmethod
