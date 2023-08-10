@@ -1,13 +1,9 @@
-FROM alpine:latest
+FROM python3:latest
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get dist-upgrade -y && \
-    apt autoremove -y && \
-    apt-get install -y python3
-RUN git clone
+RUN git clone https://github.com/the-sashko/dialog
 RUN cd /app
 WORKDIR /app
+RUN pip install -r requirements.txt
 RUN make install
 RUN make test
 

@@ -160,7 +160,7 @@ class Gpt:
         prompt[0]['content'] = prompt[0]['content'] % (self.__bot_description, self.__bot_name, user_name)
 
         if context == None:
-           context = self.__DEFAULT_PROMPT
+            context = self.__DEFAULT_PROMPT
 
         for context_message in context:
             prompt.append(context_message)

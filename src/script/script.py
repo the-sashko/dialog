@@ -80,7 +80,7 @@ class Script:
             self.__logger.log_error('Can not execute none script. Invalid data provided')
 
             return None
-        
+
         if 'message' in data and type(data['message']) == Telegram_Message:
             message = data['message']
 
