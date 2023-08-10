@@ -184,7 +184,7 @@ class Handler:
         message: TelegramMessage,
         reply_to_message_id: Union[int, None]
     ) -> None:
-        if command.get_value() == None:
+        if command.get_value() is None:
             self.__logger.log(f'Command {Command.ASCII} does not have value')
 
             reply = self.__gpt.paraphrase('Я не буду цього робити', 'angry')#TO-DO: to const
