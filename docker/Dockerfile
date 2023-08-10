@@ -1,7 +1,6 @@
-FROM python3:latest
+FROM python:3.9.17-alpine3.18
 
 RUN git clone https://github.com/the-sashko/dialog
-RUN cd /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 RUN make install

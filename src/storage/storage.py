@@ -29,10 +29,10 @@ class Storage:
             chat_id
         )
 
-        if thread == None:
+        if thread is None:
             thread = self.__get_thread_by_user_id(user_id)
 
-        if thread == None:
+        if thread is None:
             thread = self.__get_thread_by_chat_id(chat_id)
 
         return thread
@@ -61,10 +61,10 @@ class Storage:
 
         thread = self.__get_thread_by_id(id)
 
-        if thread == None:
-            thread = list()
+        if thread is None:
+            thread = []
             thread.append(message)
-            
+
             self.__insert_thead(
                 id,
                 user_id,
@@ -210,7 +210,7 @@ class Storage:
 
         thread = self.__get_thread_by_id(id)
 
-        if thread == None:
+        if thread is None:
             thread = list()
             thread.append(message)
             
@@ -238,13 +238,13 @@ class Storage:
         self,
         user_id: int,
         user_name: str,
-         message: dict
+        message: dict
     ) -> None:
         id = self.__get_primary_key(user_id, 0)
 
         thread = self.__get_thread_by_id(id)
 
-        if thread == None:
+        if thread is None:
             thread = list()
             thread.append(message)
             
@@ -344,23 +344,23 @@ class Storage:
         self.__commit()
 
     def __set_connection(self) -> None:
-        if self.__connection == None:
+        if self.__connection is None:
             self.__connection = sqlite3.connect(
                 self.__DATA_BASE_FILE_PATH % getcwd()
             )
 
     def __get_cursor(self) -> sqlite3.Cursor:
-        if self.__connection == None:
+        if self.__connection is None:
             self.__set_connection()
 
         return self.__connection.cursor()
 
     def __commit(self) -> None:
-        if self.__connection != None:
+        if self.__connection is not None:
             self.__connection.commit()
 
     def __close(self) -> None:
-        if self.__connection != None:
+        if self.__connection is not None:
             self.__connection.close()
 
     def __get_primary_key(self, user_id: int, chat_id: int) -> str:
@@ -454,7 +454,7 @@ class Storage:
 
         row = cursor.fetchone()
 
-        if row == None :
+        if row is None :
             return 0
 
         id = row[0]

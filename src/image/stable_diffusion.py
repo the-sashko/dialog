@@ -1,10 +1,10 @@
-from typing import Union
-from settings.settings import Settings
 import os
 import io
+from typing import Union
 from PIL import Image
 from stability_sdk import client
 import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
+from settings.settings import Settings
 
 #to-do: refactoring code syle
 #to-do: add logs
