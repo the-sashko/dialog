@@ -185,8 +185,5 @@ class Telegram:
         return (
             'ok' in response and
             'result' in response and
-            (
-                isinstance(response['result'], list) or
-                isinstance(response['result'], dict)
-            )
+            isinstance(response['result'], (dict, list))
         )
