@@ -1,2 +1,1 @@
-'''Image module'''
-__all__ = ["image"]
+__all__ = ['image']

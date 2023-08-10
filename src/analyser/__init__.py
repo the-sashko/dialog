@@ -1,2 +1,1 @@
-'''Analyser module'''
-__all__ = ["analyser"]
+__all__ = ['analyser']

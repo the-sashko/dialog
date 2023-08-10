@@ -1,2 +1,1 @@
-'''ASCII module'''
-__all__ = ["ascii"]
+__all__ = ['ascii']

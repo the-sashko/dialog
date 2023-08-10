@@ -1,2 +1,1 @@
-'''Command module'''
-__all__ = ["command"]
+__all__ = ['command']

@@ -1,2 +1,1 @@
-'''GPT module'''
-__all__ = ["gpt"]
+__all__ = ['gpt']

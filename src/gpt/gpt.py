@@ -90,10 +90,10 @@ class Gpt:
 
         prompt[0]['content'] = prompt[0]['content'] % (self.__bot_description, self.__bot_name, user_name)
 
-        prompt.append({'role': 'system', 'content': 'Rewrite this text: %s' % text})
+        prompt.append({'role': 'system', 'content': f'Rewrite this text: {text}'})
 
         if mood != 'neutral':
-            prompt.append({'role': 'system', 'content': 'Give ansver is %s style' % mood})
+            prompt.append({'role': 'system', 'content': f'Give ansver is {mood} style'})
 
         text = self.get(
             prompt,
@@ -133,15 +133,15 @@ class Gpt:
                 return None
 
             if model == self.GPT_3_MODEL_16K:
-                self.__logger.log('Fallback to %s model' % self.GPT_3_MODEL)
+                self.__logger.log(f'Fallback to {self.GPT_3_MODEL} model')
                 return self.get(prompt, self.GPT_3_MODEL)
 
             if model == self.GPT_4_MODEL:
-                self.__logger.log('Fallback to %s model' % self.GPT_3_MODEL_16K)
+                self.__logger.log(f'Fallback to {self.GPT_3_MODEL_16K} model')
                 return self.get(prompt, self.GPT_3_MODEL_16K)
 
             if model == self.GPT_4_MODEL_32K:
-                self.__logger.log('Fallback to %s model' % self.GPT_4_MODEL)
+                self.__logger.log(f'Fallback to {self.GPT_4_MODEL} model')
                 return self.get(prompt, self.GPT_4_MODEL)
 
     def __get_prompt(
@@ -174,7 +174,7 @@ class Gpt:
         last_prompt_reply = prompt[-1]
 
         if mood != 'neutral':
-            prompt.append({'role': 'system', 'content': 'Give ansver is %s style' % mood})
+            prompt.append({'role': 'system', 'content': f'Give ansver is {mood} style'})
 
         if last_prompt_reply['role'] == 'user' and last_prompt_reply['content'] == message:
             return prompt

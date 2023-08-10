@@ -39,19 +39,19 @@ class Handler:
         self.__logger.log('Start handling commands')
 
         if command.get_type() == Command.IMAGE:
-            self.__logger.log('Start handling %s command' % Command.IMAGE)
+            self.__logger.log(f'Start handling {Command.IMAGE} command')
             self.__do_command_image(command, message, reply_to_message_id)
-            self.__logger.log('End handling %s command' % Command.IMAGE)
+            self.__logger.log(f'End handling {Command.IMAGE} command')
 
         if command.get_type() == Command.VOICE:
-            self.__logger.log('Start handling %s command' % Command.VOICE)
+            self.__logger.log(f'Start handling {Command.VOICE} command')
             self.__do_command_voice(command, message, reply_to_message_id)
-            self.__logger.log('End handling %s command' % Command.VOICE)
+            self.__logger.log(f'End handling {Command.VOICE} command')
 
         if command.get_type() == Command.ASCII:
-            self.__logger.log('Start handling %s command' % Command.ASCII)
+            self.__logger.log(f'Start handling {Command.ASCII} command')
             self.__do_command_ascii(command, message, reply_to_message_id)
-            self.__logger.log('End handling %s command' % Command.ASCII)
+            self.__logger.log(f'End handling {Command.ASCII} command')
 
         self.__logger.log('End handling commands')
 
@@ -64,7 +64,7 @@ class Handler:
             reply_to_message_id: Union[int, None]
     ) -> None:
         if command.get_value() == None:
-            self.__logger.log('Command %s does not have value' % Command.VOICE)
+            self.__logger.log(f'Command {Command.VOICE} does not have value')
 
             reply = self.__gpt.paraphrase('Я не буду це казати', 'angry')#TO-DO: to const
 
@@ -113,7 +113,7 @@ class Handler:
         reply_to_message_id: Union[int, None]
     ) -> None:
         if command.get_value() == None:
-            self.__logger.log('Command %s does not have value' % Command.IMAGE)
+            self.__logger.log(f'Command {Command.IMAGE} does not have value')
 
             reply = self.__gpt.paraphrase('Я не буду це малювати', 'angry')#TO-DO: to const
 
@@ -184,7 +184,7 @@ class Handler:
         reply_to_message_id: Union[int, None]
     ) -> None:
         if command.get_value() == None:
-            self.__logger.log('Command %s does not have value' % Command.ASCII)
+            self.__logger.log(f'Command {Command.ASCII} does not have value')
 
             reply = self.__gpt.paraphrase('Я не буду цього робити', 'angry')#TO-DO: to const
 

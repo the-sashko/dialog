@@ -1,2 +1,1 @@
-'''Chance module'''
-__all__ = ["chance"]
+__all__ = ['chance']

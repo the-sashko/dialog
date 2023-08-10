@@ -1,2 +1,1 @@
-'''Logger module'''
-__all__ = ["logger"]
+__all__ = ['logger']

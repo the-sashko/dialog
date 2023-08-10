@@ -92,7 +92,7 @@ class Handler:
         trigger_name = self.__analyser.get_trigger(message)
 
         if trigger_name is not None:
-            self.__logger.log('Found %s trigger' % trigger_name)
+            self.__logger.log(f'Found {trigger_name} trigger')
 
         self.__logger.log('End retrieving trigger from Telegram message')
 
@@ -111,7 +111,7 @@ class Handler:
         command = self.__analyser.get_command(message)
 
         if command is not None:
-            self.__logger.log('Found %s command' % command.get_type())
+            self.__logger.log(f'Found {command.get_type()} command')
 
         self.__logger.log('End retrieving command from Telegram message')
 
@@ -126,7 +126,7 @@ class Handler:
 
         mood = self.__analyser.get_mood(message.get_text())
 
-        self.__logger.log('Found %s mood' % mood)
+        self.__logger.log(f'Found {mood} mood')
 
         self.__logger.log('End retrieving mood from Telegram message')
 

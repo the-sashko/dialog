@@ -69,7 +69,7 @@ class Analyser:
             {'role': 'system', 'content': 'You are a text parser'}
         ]
 
-        prompt.append({'role': 'system', 'content': 'Analyse is user ask for %s. Result should be just true or false' % command_prompt})
+        prompt.append({'role': 'system', 'content': f'Analyse is user ask for {command_prompt}. Result should be just true or false'})
         prompt.append({'role': 'user', 'content': message.get_text()})
 
         response = self.__gpt.get(

@@ -25,7 +25,7 @@ class Logger:
         if len(log_type) < 1:
             log_type = self.__DEFAULT_LOG_TYPE
 
-        print('[%s] %s\n' % (log_type.upper(), message))
+        print(f'[{log_type.upper()}] {message}\n')
 
         log_type = log_type.lower()
 
@@ -55,14 +55,14 @@ class Logger:
 
             self.log(error_message, 'error')
 
-            self.__telegram.send_message_to_log_chat('[ERROR] %s' % error_message)
+            self.__telegram.send_message_to_log_chat(f'[ERROR] {error_message}')
         except Exception as exp:
             if hasattr(exp, 'message'):
                 error_message = exp.message
             else:
                 error_message = str(exp)
 
-            print('FATAL ERROR: %s' % error_message)
+            print(f'FATAL ERROR: {error_message}')
             sys.exit(1)
 
     def __get_log_dir_path(self, log_type: str) -> str:
@@ -80,7 +80,7 @@ class Logger:
         month   = datetime.datetime.today().strftime('%m')
         day     = datetime.datetime.today().strftime('%d')
 
-        return '%s-%s-%s-%s' % (log_type, old_year, month, day)
+        return f'{log_type}-{old_year}-{month}-{day}'
 
     def __get_old_log_file_path(self, log_type: str) -> str:
         log_dir_path = self.__get_log_dir_path(log_type)
@@ -99,7 +99,7 @@ class Logger:
         month = datetime.datetime.today().strftime('%m')
         day   = datetime.datetime.today().strftime('%d')
 
-        return '%s-%s-%s-%s' % (log_type, year, month, day)
+        return f'{log_type}-{year}-{month}-{day}'
 
     def __get_log_file_path(self, log_type: str) -> str:
         log_dir_path = self.__get_log_dir_path(log_type)
