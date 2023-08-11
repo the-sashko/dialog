@@ -240,12 +240,26 @@ class Script:
             self.__logger.log_error('Can not execute random_image script. Invalid data provided')
 
             return None
+        
+        random_image_promt = 'funny meme'#To-Do: implement random
 
-        prompt = self.__gpt.paraphrase(
-            'photo of cat burps'#To-Do: implement random
+        prompt = [
+            {'role': 'system', 'content': 'Imagine image by user prompt. Create description of image. Response should be only description in 128 symbols'},
+            {'role': 'user', 'content': random_image_promt}
+        ]
+
+        image_promt = self.__gpt.get(prompt)
+
+        if image_promt is None:
+            self.__logger.log_error(f'Can not create image description by prompt {random_image_promt}')
+
+            return None
+
+        reply = self.__gpt.paraphrase(
+            f'photo of {prompt}'
         )
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if image_promt is not None and 'message' in data and type(data['message']) == Telegram_Message:
             message = data['message']
 
             self.__storage.save_message(
@@ -253,10 +267,10 @@ class Script:
                 message.get_chat().get_id(),
                 message.get_user().get_name(),
                 message.get_chat().get_title(),
-                {'role': 'assistant', 'content': f'Дивись: {prompt}'}
+                {'role': 'assistant', 'content': f'Дивись: {reply}'}
             )
 
-        image_file_path = self.__image.create_image(prompt)
+        image_file_path = self.__image.create_image(image_promt)
 
         self.__telegram.send_photo(
             data['chat_id'],

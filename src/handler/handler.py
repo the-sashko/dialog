@@ -25,7 +25,7 @@ class Handler:
     __CHANCE_TO_REPLY_IN_AUDIO = 1
     __CHANCE_TO_RANDOM_TEST = 2
     __CHANCE_TO_RANDOM_VOICE = 2
-    __CHANCE_TO_RANDOM_IMAGE = 2
+    __CHANCE_TO_RANDOM_IMAGE = 100
 
     __telegram = None
     __markov = None

@@ -117,6 +117,8 @@ class Gpt:
 
         self.__logger.log('Start sending prompt to ChatGPT')
 
+        self.__logger.log(f'Using {model} model')
+
         try: # To-Do: add validator
             response = openai.ChatCompletion.create(
                 model=model,
