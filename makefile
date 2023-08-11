@@ -18,6 +18,9 @@ build:
 run:
 	@python3 src/app.py
 
+parse:
+	@python3 src/markov_parseer.py
+
 test:
 	@echo "Done!"
 

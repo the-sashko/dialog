@@ -13,17 +13,19 @@ from analyser.analyser import Analyser
 from chance.chance import Chance
 from command.parser import Parser as Command_Parser
 from command.handler import Handler as Command_Handler
+from command.command import Command
 from logger.logger import Logger
 from trigger.trigger import Trigger
+from post_processing.post_processing import Post_Processing
 
 #to-do: refactoring code syle
 #to-do: add logs
 class Handler:
     #TO-DO fit chances
     __CHANCE_TO_MODIFY_MARKOV_REPLY = 5
-    __CHANCE_TO_REPLY_IN_PUBLIC_CHAT = 2
+    __CHANCE_TO_REPLY_IN_PUBLIC_CHAT = 5
     __CHANCE_TO_REPLY_IN_AUDIO = 1
-    __CHANCE_TO_RANDOM_TEST = 100
+    __CHANCE_TO_RANDOM_TEST = 1
     __CHANCE_TO_RANDOM_VOICE = 1
     __CHANCE_TO_RANDOM_IMAGE = 2
 
@@ -38,6 +40,7 @@ class Handler:
     __command_handler = None
     __logger = None
     __trigger = None
+    __post_processing = None
 
     __telegram_bot_id = None
     __telegram_log_chat_id = None
@@ -55,6 +58,7 @@ class Handler:
         self.__command_handler = Command_Handler()
         self.__logger = Logger()
         self.__trigger = Trigger()
+        self.__post_processing = Post_Processing()
 
         telegram_config = Settings().get_telegram_config()
         bot_config = Settings().get_bot_config()
@@ -88,9 +92,13 @@ class Handler:
                 {"role": "user", "content": message.get_text()}
             )
 
-            trigger_name = self.__get_random_trigger(message)
+            is_ignore = self.__is_ignore(message)
+            trigger_name = None
 
-            if self.__is_ignore(message) and trigger_name is None:
+            if is_ignore:
+                trigger_name = self.__get_random_trigger(message)
+
+            if is_ignore and trigger_name is None:
                 return None
 
             self.__logger.log('Start retrieving trigger from Telegram message')
@@ -137,13 +145,15 @@ class Handler:
 
             self.__logger.log('End retrieving mood from Telegram message')
 
+            is_reply_in_audio = self.__is_reply_in_audio(message)
+
             reply = self.__get_reply(message, mood)
-            reply = self.__post_process(reply)
+            reply = self.__post_process(reply, message, is_reply_in_audio)
 
             if reply == None:
                 return None
         
-            if self.__is_reply_in_audio(message):
+            if is_reply_in_audio:
                 audio_file_path = self.__tts.text2audio(reply)
 
                 self.__telegram.send_voice(
@@ -173,6 +183,19 @@ class Handler:
                     'message': message
                 }
             )
+
+    def __post_process(
+        self,
+        text: Union[str, None],
+        message: Telegram_Message,
+        is_reply_in_audio: bool
+    ) -> Union[str, None]:
+        return self.__post_processing.do_handle(
+            text,
+            self.__is_mandatory_reply(message),
+            message.get_voice() is None,
+            is_reply_in_audio
+        )
 
     def __get_reply(
         self,
@@ -221,22 +244,19 @@ class Handler:
     def __is_reply_in_audio(self, message: Telegram_Message) -> bool:
         if message.get_voice() is not None:
             return True
-        
-        #TO-DO: parse voice keywords
 
         if self.__chance.get(self.__CHANCE_TO_REPLY_IN_AUDIO):
             return True
 
         return False
 
-    def __post_process(
-        self,
-        text: Union[str, None]
-    ) -> Union[str, None]:
-        #To-Do
-        return text
-
     def __get_random_trigger(self, message: Telegram_Message) -> Union[str, None]:
+        if message.get_text() == Command.IMAGE:
+            return self.__trigger.RANDOM_IMAGE_TRIGGER
+
+        if message.get_text() == Command.VOICE:
+            return self.__trigger.RANDOM_VOICE_TRIGGER
+
         if (
             message.get_chat().get_id() == self.__telegram_log_chat_id or
             not message.get_chat().is_group_type() or
@@ -244,13 +264,13 @@ class Handler:
         ):
             return None
 
-        if self.__chance.get(self.__CHANCE_TO_RANDOM_TEST):
-            return self.__trigger.RANDOM_TEXT_TRIGGER
+        if self.__chance.get(self.__CHANCE_TO_RANDOM_IMAGE):
+            return self.__trigger.RANDOM_IMAGE_TRIGGER
 
         if self.__chance.get(self.__CHANCE_TO_RANDOM_VOICE):
             return self.__trigger.RANDOM_VOICE_TRIGGER
 
-        if self.__chance.get(self.__CHANCE_TO_RANDOM_IMAGE):
-            return self.__trigger.RANDOM_IMAGE_TRIGGER
+        if self.__chance.get(self.__CHANCE_TO_RANDOM_TEST):
+            return self.__trigger.RANDOM_TEXT_TRIGGER
 
         return None

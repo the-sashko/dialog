@@ -9,6 +9,8 @@ from image.image import Image
 from storage.storage import Storage
 from settings.settings import Settings
 from chance.chance import Chance
+from markov.markov import Markov
+from post_processing.post_processing import Post_Processing
 
 class Script:
     TEST_SCRIPT = 'test'
@@ -20,6 +22,7 @@ class Script:
     NONE_SCRIPT = 'none'
 
     __CHANCE_TO_PARAPHRASE_VOICE_MESSAGE = 20
+    __CHANCE_TO_PARAPHRASE_TEXT_MESSAGE = 85
 
     __logger = None
     __telegram = None
@@ -28,9 +31,15 @@ class Script:
     __image = None
     __storage = None
     __chance = None
+    __markov = None
+    __post_processing = None
 
     __random_image_prompts = None
     __random_voice_prompts = None
+    __random_text_prompts = None
+    __random_test_prompts = None
+    __random_hello_prompts = None
+    __random_about_me_prompts = None
 
     def __init__(self):
         self.__logger = Logger()
@@ -40,6 +49,8 @@ class Script:
         self.__image = Image()
         self.__storage = Storage()
         self.__chance = Chance()
+        self.__markov = Markov()
+        self.__post_processing = Post_Processing()
 
         settings = Settings()
 
@@ -47,6 +58,10 @@ class Script:
 
         self.__random_image_prompts = replies_config['random_images']
         self.__random_voice_prompts = replies_config['random_voices']
+        self.__random_text_prompts = replies_config['random_texts']
+        self.__random_test_prompts = replies_config['random_tests']
+        self.__random_hello_prompts = replies_config['random_hello']
+        self.__random_about_me_prompts = replies_config['random_about_me']
 
     def run(
         self,
@@ -122,7 +137,7 @@ class Script:
             return None
 
         reply = self.__gpt.paraphrase(
-            'Анус собі протестуй. Пес, блядь'#To-Do: to config
+            random.choice(self.__random_test_prompts)
         )
 
         if 'message' in data and type(data['message']) == Telegram_Message:
@@ -149,7 +164,7 @@ class Script:
             return None
 
         reply = self.__gpt.paraphrase(
-            'Привіт, мудило. Давно не бачилися'#To-Do: to config
+            random.choice(self.__random_hello_prompts)
         )
 
         if 'message' in data and type(data['message']) == Telegram_Message:
@@ -176,7 +191,7 @@ class Script:
             return None
 
         reply = self.__gpt.paraphrase(
-            'Хто я? Я коханець твоєї мамки!'#To-Do: to config
+            random.choice(self.__random_about_me_prompts)
         )
 
         if 'message' in data and type(data['message']) == Telegram_Message:
@@ -196,15 +211,37 @@ class Script:
             data['reply_to_message_id']
         )
 
+    def __get_random_text(self) -> Union[str, None]:
+        random_text = random.choice(self.__random_text_prompts)
+
+        if random_text == 'random':
+            random_text = self.__markov.get_random_text()
+
+        if random_text is None:
+            self.__logger.log_error('Random text generation failed')
+
+        return random_text
+
     def __do_random_text(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data:
             self.__logger.log_error('Can not execute random_text script. Invalid data provided')
 
             return None
 
-        reply = self.__gpt.paraphrase(
-            'Агов, як справи, сучки!'#To-Do: implement random
+        reply = self.__get_random_text()
+
+        reply = self.__post_processing.do_handle(
+            reply,
+            False,
+            False,
+            False
         )
+
+        if reply is None:
+            return None
+
+        if self.__chance.get(self.__CHANCE_TO_PARAPHRASE_TEXT_MESSAGE):
+            reply = self.__gpt.paraphrase(reply)
 
         if 'message' in data and type(data['message']) == Telegram_Message:
             message = data['message']
@@ -229,6 +266,22 @@ class Script:
             return None
 
         reply = random.choice(self.__random_voice_prompts)
+
+        if reply == 'random':
+            reply = self.__get_random_text()
+
+        if reply is None:
+            return None
+
+        reply = self.__post_processing.do_handle(
+            reply,
+            False,
+            False,
+            True
+        )
+
+        if reply is None:
+            return None
 
         if self.__chance.get(self.__CHANCE_TO_PARAPHRASE_VOICE_MESSAGE):
             reply = self.__gpt.paraphrase(reply)

@@ -1,7 +1,7 @@
 import json
 import os
 from typing import Union
-import numpy
+import random
 from markov.dictionary import Dictionary
 from markov.formatter import Formatter
 from markov.tokenizer import Tokenizer
@@ -12,6 +12,7 @@ from storage.storage import Storage
 #to-do: add logs
 class Markov():
     __MAX_SENTENTCES_COUNT = 10
+    __RANDOM_TEXT_GENERATION_MAX_TRY_COUNT = 25
 
     __MIN_CHUNK_LENGTH = 2
     __MAX_CHUNK_LENGTH = 10
@@ -78,6 +79,38 @@ class Markov():
         self.__logger.log('End formatting output text')
 
         return text
+
+    def get_random_text(self) -> Union[str, None]:
+        random_text = None
+
+        try_count = 0
+
+        while random_text is None:
+            if try_count >= self.__RANDOM_TEXT_GENERATION_MAX_TRY_COUNT:
+                return None
+
+            random_token = self.__get_random_token()
+
+            if random_token is None:
+                return None
+
+            random_text = self.__dictionary.get_word_by_id(random_token)
+
+            random_text = self.get_reply(random_text)
+
+            try_count += 1
+
+        return random_text
+
+    def __get_random_token(self) -> Union[int, None]:
+        chunk_id = self.__dictionary.get_start_id()
+
+        chunk = self.__get_chunk_by_id(chunk_id)
+
+        if chunk == None:
+            return None
+
+        return int(random.choice(chunk))
 
     def do_parse(self):
         try:
@@ -181,7 +214,7 @@ class Markov():
         if chunk is None:
             return chain
 
-        token = int(numpy.random.choice(chunk))
+        token = int(random.choice(chunk))
 
         if token == self.__dictionary.get_end_id() :
             sentence_count += 1
