@@ -1,5 +1,5 @@
-import openai
 from typing import Union
+import openai
 from settings.settings import Settings
 from telegram.message import Message as TelegramMessage
 from storage.storage import Storage
@@ -61,8 +61,8 @@ class Gpt:
 
         reply = self.get(prompt)
 
-        if reply == None:
-            return reply
+        if reply is None:
+            return None
 
         self.__storage.save_message(
             message.get_user().get_id(),
@@ -100,7 +100,7 @@ class Gpt:
             self.GPT_3_MODEL
         )
 
-        if text == None:
+        if text is None:
             return None
 
         return text
@@ -131,9 +131,6 @@ class Gpt:
         except Exception as exp:#To-Do: refactor, move to hadle error method
             self.__logger.log_error(exp)
 
-            if model == self.GPT_3_MODEL:
-                return None
-
             if model == self.GPT_3_MODEL_16K:
                 self.__logger.log(f'Fallback to {self.GPT_3_MODEL} model')
                 return self.get(prompt, self.GPT_3_MODEL)
@@ -145,6 +142,8 @@ class Gpt:
             if model == self.GPT_4_MODEL_32K:
                 self.__logger.log(f'Fallback to {self.GPT_4_MODEL} model')
                 return self.get(prompt, self.GPT_4_MODEL)
+
+            return None
 
     def __get_prompt(
             self,
@@ -161,7 +160,7 @@ class Gpt:
 
         prompt[0]['content'] = prompt[0]['content'] % (self.__bot_description, self.__bot_name, user_name)
 
-        if context == None:
+        if context is None:
             context = self.__DEFAULT_PROMPT
 
         for context_message in context:
@@ -169,7 +168,7 @@ class Gpt:
 
         last_prompt_reply = prompt[-1]
 
-        if parrent_message != None and last_prompt_reply['content'] == parrent_message:
+        if parrent_message is not None and last_prompt_reply['content'] == parrent_message:
             #To-Do move current message to last
             prompt.append({'role': 'assistant', 'content': parrent_message}) #To-Do: fix role (parent message can be from bot and user)
 
