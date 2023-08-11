@@ -213,7 +213,7 @@ class Handler:
             self.__logger.log(f'Command {Command.SAY} does not have value')
 
             return None
-        
+
         message_text = command.get_value()
 
         chat_id = self.__main_chat_id

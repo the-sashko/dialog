@@ -48,5 +48,5 @@ class Notification:
             )
 
         self.__logger.log(
-            f'End sending notification to all chats'
+            'End sending notification to all chats'
         )
