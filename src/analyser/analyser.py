@@ -53,6 +53,9 @@ class Analyser:
         return mood
 
     def get_trigger(self, message: Telegram_Message) -> Union[str, None]:
+        if message.get_text().lower() == Command.IMAGE:
+            return Trigger.RANDOM_IMAGE_TRIGGER
+
         if message.get_text().lower() == 'test':
             return Trigger.TEST_TRIGGER
 

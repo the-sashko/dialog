@@ -1,3 +1,4 @@
+import random
 from typing import Union
 from logger.logger import Logger
 from telegram.telegram import Telegram
@@ -6,6 +7,8 @@ from gpt.gpt import Gpt
 from tts.tts import Tts
 from image.image import Image
 from storage.storage import Storage
+from settings.settings import Settings
+from chance.chance import Chance
 
 class Script:
     TEST_SCRIPT = 'test'
@@ -16,12 +19,18 @@ class Script:
     RANDOM_IMAGE_SCRIPT = 'random_image'
     NONE_SCRIPT = 'none'
 
+    __CHANCE_TO_PARAPHRASE_VOICE_MESSAGE = 20
+
     __logger = None
     __telegram = None
     __gpt = None
     __tts = None
     __image = None
     __storage = None
+    __chance = None
+
+    __random_image_prompts = None
+    __random_voice_prompts = None
 
     def __init__(self):
         self.__logger = Logger()
@@ -30,6 +39,14 @@ class Script:
         self.__tts = Tts()
         self.__image = Image()
         self.__storage = Storage()
+        self.__chance = Chance()
+
+        settings = Settings()
+
+        replies_config = settings.get_replies_config()
+
+        self.__random_image_prompts = replies_config['random_images']
+        self.__random_voice_prompts = replies_config['random_voices']
 
     def run(
         self,
@@ -211,11 +228,10 @@ class Script:
 
             return None
 
-        #reply = self.__gpt.paraphrase(
-        reply = 'Увага! Повітряна тривога! Летить пакет із гівноом! Пройдіть в найближче укриття! Увага! Повітряна тривога! Летить пакет із гівноом!'#To-Do: implement random
-        #)
-        reply = 'Путін - gun done'#To-Do: implement random
+        reply = random.choice(self.__random_voice_prompts)
 
+        if self.__chance.get(self.__CHANCE_TO_PARAPHRASE_VOICE_MESSAGE):
+            reply = self.__gpt.paraphrase(reply)
 
         if 'message' in data and type(data['message']) == Telegram_Message:
             message = data['message']
@@ -241,7 +257,7 @@ class Script:
 
             return None
 
-        random_image_promt = 'funny meme'#To-Do: implement random
+        random_image_promt = random.choice(self.__random_image_prompts)
 
         prompt = [
             {'role': 'system', 'content': 'Imagine image by user prompt. Create description of image. Response should be only description in 128 symbols'},
@@ -256,7 +272,7 @@ class Script:
             return None
 
         reply = self.__gpt.paraphrase(
-            f'photo of {prompt}'
+            f'Look at this photo of {prompt}'
         )
 
         if (
@@ -271,7 +287,7 @@ class Script:
                 message.get_chat().get_id(),
                 message.get_user().get_name(),
                 message.get_chat().get_title(),
-                {'role': 'assistant', 'content': f'Дивись: {reply}'}
+                {'role': 'assistant', 'content': reply}
             )
 
         image_file_path = self.__image.create_image(image_promt)

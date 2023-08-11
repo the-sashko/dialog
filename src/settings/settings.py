@@ -9,6 +9,7 @@ class Settings:
     __OPEN_AI_CONFIG_NAME = 'open_ai'
     __TELEGRAM_CONFIG_NAME = 'telegram'
     __STABLE_DIFFUSION_CONFIG_NAME = 'stable_diffusion'
+    __REPLIES_CONFIG_NAME = 'replies'
 
     __data = {}
 
@@ -17,6 +18,7 @@ class Settings:
         self.__set_config(self.__OPEN_AI_CONFIG_NAME)
         self.__set_config(self.__TELEGRAM_CONFIG_NAME)
         self.__set_config(self.__STABLE_DIFFUSION_CONFIG_NAME)
+        self.__set_config(self.__REPLIES_CONFIG_NAME)
 
     def get_bot_config(self) -> dict:
         return self.__get_config(self.__BOT_CONFIG_NAME)
@@ -29,6 +31,9 @@ class Settings:
 
     def get_stable_diffusion_config(self) -> dict:
         return self.__get_config(self.__STABLE_DIFFUSION_CONFIG_NAME)
+
+    def get_replies_config(self) -> dict:
+        return self.__get_config(self.__REPLIES_CONFIG_NAME)
 
     def __get_config(self, config_name: str) -> dict:
         if not config_name in self.__data:
