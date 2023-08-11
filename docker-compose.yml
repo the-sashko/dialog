@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./app/docker/Dockerfile
     container_name: dialog-bot
 
     volumes:
