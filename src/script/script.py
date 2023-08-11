@@ -240,7 +240,7 @@ class Script:
             self.__logger.log_error('Can not execute random_image script. Invalid data provided')
 
             return None
-        
+
         random_image_promt = 'funny meme'#To-Do: implement random
 
         prompt = [
@@ -259,7 +259,11 @@ class Script:
             f'photo of {prompt}'
         )
 
-        if image_promt is not None and 'message' in data and type(data['message']) == Telegram_Message:
+        if (
+            image_promt is not None and
+            'message' in data and
+            isinstance(data['message'], Telegram_Message)
+        ):
             message = data['message']
 
             self.__storage.save_message(
