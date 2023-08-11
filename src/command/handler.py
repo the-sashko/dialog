@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import re
 from typing import Union
 from telegram.telegram import Telegram
 from telegram.message import Message as TelegramMessage
@@ -10,6 +11,8 @@ from image.image import Image
 from command.command import Command
 from ascii.ascii import Ascii
 from logger.logger import Logger
+from notification.notification import Notification
+from settings.settings import Settings
 
 #to-do: add logs
 class Handler:
@@ -20,6 +23,9 @@ class Handler:
     __image = None
     __ascii = None
     __logger = None
+    __notification = None
+
+    __main_chat_id = None
 
     def __init__(self) -> None:
         self.__telegram = Telegram()
@@ -29,6 +35,11 @@ class Handler:
         self.__image = Image()
         self.__ascii = Ascii()
         self.__logger = Logger()
+        self.__notification = Notification()
+
+        telegram_config = Settings().get_telegram_config()
+
+        self.__main_chat_id = telegram_config['main_chat_id']
 
     def do_handle(
         self,
@@ -52,6 +63,16 @@ class Handler:
             self.__logger.log(f'Start handling {Command.ASCII} command')
             self.__do_command_ascii(command, message, reply_to_message_id)
             self.__logger.log(f'End handling {Command.ASCII} command')
+
+        if command.get_type() == Command.SAY:
+            self.__logger.log(f'Start handling {Command.SAY} command')
+            self.__do_command_say(command, message)
+            self.__logger.log(f'End handling {Command.SAY} command')
+
+        if command.get_type() == Command.SAY_ALL:
+            self.__logger.log(f'Start handling {Command.SAY_ALL} command')
+            self.__do_command_say_all(command, message)
+            self.__logger.log(f'End handling {Command.SAY_ALL} command')
 
         self.__logger.log('End handling commands')
 
@@ -177,6 +198,80 @@ class Handler:
         )
 
         return None
+
+    def __do_command_say(
+        self,
+        command: Command,
+        message: TelegramMessage
+    ) -> None:
+        if not message.get_chat().is_admin_chat():
+            self.__logger.log_error(f'Command {Command.SAY} can be executed only by admin')
+
+            return None
+
+        if command.get_value() is None:
+            self.__logger.log(f'Command {Command.SAY} does not have value')
+
+            return None
+        
+        message_text = command.get_value()
+
+        chat_id = self.__main_chat_id
+
+        pattern = r'^(\d+)(.*?)$'
+
+        if (re.search(pattern, message_text, flags=re.IGNORECASE) is not None):
+            chat_id = re.sub(pattern, r'\g<1>', message_text, 0, re.IGNORECASE)
+            chat_id = re.sub(r'\s+', r' ', chat_id)
+            chat_id = re.sub(r'((^\s+)|(\s+$))', r'', chat_id)
+            chat_id = int(chat_id)
+
+            message_text = re.sub(pattern, r'\g<2>', message_text, 0, re.IGNORECASE)
+            message_text = re.sub(r'\s+', r' ', message_text)
+            message_text = re.sub(r'((^\s+)|(\s+$))', r'', message_text)
+
+        if message_text is None or message_text == '':
+            message_text = None
+
+        if chat_id is None or chat_id < 1:
+            chat_id = None
+
+        if message_text is None:
+            self.__logger.log('Nothing to say')
+
+            return None
+
+        if chat_id is None:
+            self.__logger.log('Invalid chat_id')
+
+            return None
+
+        self.__storage.save_message(
+            message.get_user().get_id(),
+            message.get_chat().get_id(),
+            message.get_user().get_name(),
+            message.get_chat().get_title(),
+            {'role': 'assistant', 'content': message_text}
+        )
+
+        self.__notification.send(message_text, chat_id)
+
+    def __do_command_say_all(
+        self,
+        command: Command,
+        message: TelegramMessage
+    ) -> None:
+        if not message.get_chat().is_admin_chat():
+            self.__logger.log_error(f'Command {Command.SAY_ALL} can be executed only by admin')
+
+            return None
+
+        if command.get_value() is None:
+            self.__logger.log(f'Command {Command.SAY_ALL} does not have value')
+
+            return None
+
+        self.__notification.send_all(command.get_value())
 
     def __do_command_ascii(
         self,

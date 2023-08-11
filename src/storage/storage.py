@@ -85,7 +85,37 @@ class Storage:
 
         return None
 
-    def update_chunks_by_id(self, chunk_id: str, value: str) -> None:
+    def get_all_chat_ids(self) -> Union[list, None]:
+        chat_ids = []
+
+        sql = '''
+            SELECT DISTINCT chat_id
+            FROM threads
+            WHERE chat_id != 0;
+        '''
+
+        cursor = self.__get_cursor()
+
+        cursor.execute(sql)
+
+        rows = cursor.fetchall()
+
+        if rows is None or len(rows) < 1:
+            return None
+
+        for row in rows:
+            chat_ids.append(int(row[0]))
+
+        if len(chat_ids) < 1:
+            return None
+
+        return chat_ids
+
+    def update_chunks_by_id(
+        self,
+        chunk_id: str,
+        value: str
+    ) -> None:
         sql = '''
             UPDATE chunks
             SET value = :value
@@ -103,7 +133,10 @@ class Storage:
 
         self.__commit()
 
-    def get_word_from_dictionary_by_id(self, dictionary_id: int) -> Union[str, None]:
+    def get_word_from_dictionary_by_id(
+        self,
+        dictionary_id: int
+    ) -> Union[str, None]:
         sql = '''
             SELECT word
             FROM dictionary
@@ -121,7 +154,10 @@ class Storage:
 
         return row[0]
 
-    def get_id_from_dictionary_by_word(self, word: str) -> Union[int, None]:
+    def get_id_from_dictionary_by_word(
+        self,
+        word: str
+    ) -> Union[int, None]:
         sql = '''
             SELECT id
             FROM dictionary
@@ -338,7 +374,8 @@ class Storage:
         self.__commit()
 
         cursor.execute('''
-            CREATE UNIQUE INDEX threads_chat_id_user_id ON threads(chat_id, user_id);
+            CREATE UNIQUE INDEX threads_chat_id_user_id
+                ON threads(chat_id, user_id);
         ''')
 
         self.__commit()
@@ -414,7 +451,14 @@ class Storage:
         thread: list
     ) -> None:
         sql = '''
-            INSERT INTO threads (id, user_id, chat_id, user_name, chat_name, thread)
+            INSERT INTO threads (
+                id,
+                user_id,
+                chat_id,
+                user_name,
+                chat_name,
+                thread
+            )
             VALUES (?, ?, ?, ?, ?, ?);
         '''
 

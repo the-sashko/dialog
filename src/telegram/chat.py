@@ -1,4 +1,5 @@
 import json
+from settings.settings import Settings
 
 class Chat:
     __TYPE_PRIVATE = 'private'
@@ -12,6 +13,8 @@ class Chat:
     __title = None
     __type = __TYPE_UNSUPPORTED
 
+    __admin_chat_id = None
+
     def __init__(self, values: dict):
         if not self.__is_values_have_valid_format(values):
             raise Exception(f'Telegram chat values have invalid Format. Values: {json.dumps(values)}')
@@ -19,6 +22,10 @@ class Chat:
         self.__set_id(int(values['id']))
         self.__set_title(values)
         self.__set_type(str(values['type']))
+
+        telegram_config = Settings().get_telegram_config()
+
+        self.__admin_chat_id = telegram_config['admin_chat_id']
 
     def get_id(self) -> int:
         return self.__id
@@ -37,6 +44,9 @@ class Chat:
 
     def is_supported(self) -> bool:
         return self.__type != self.__TYPE_UNSUPPORTED
+
+    def is_admin_chat(self) -> bool:
+        return self.__admin_chat_id == self.__id
 
     def __set_id(self, id: int) -> None:
         self.__id = id

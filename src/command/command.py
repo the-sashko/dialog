@@ -4,6 +4,8 @@ class Command:
     VOICE = '[voice]'
     IMAGE = '[image]'
     ASCII = '[ascii]'
+    SAY = '[say]'
+    SAY_ALL = '[say_all]'
 
     __type = None
 
