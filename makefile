@@ -57,6 +57,7 @@ build-base:
 	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
 
 deploy:
+	cd terraform && terraform validate
 	cd terraform && terraform plan
 	cd terraform && terraform apply -auto-approve
 

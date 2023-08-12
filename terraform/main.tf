@@ -51,65 +51,103 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-#resource "aws_vpc" "dialog_bot_vpc" {
-#  cidr_block           = "10.123.0.0/16"
-#  enable_dns_hostnames = true
-#  enable_dns_support   = true
-#}
+resource "aws_default_vpc" "default_vpc" {
+}
 
-#resource "aws_subnet" "dialog_bot_subnet" {
-#  vpc_id                  = aws_vpc.dialog_bot_vpc.id
-#  cidr_block              = "10.123.1.0/24"
-#  map_public_ip_on_launch = true
-#  availability_zone       = "eu-west-2"
-#}
+resource "aws_default_subnet" "default_subnet_a" {
+  availability_zone = "eu-west-2a"
+}
 
-#resource "aws_internet_gateway" "dialog_bot_gateway" {
-#  vpc_id = aws_vpc.dialog_bot_vpc.id
-#}
+resource "aws_default_subnet" "default_subnet_b" {
+  availability_zone = "eu-west-2b"
+}
 
-#resource "aws_route_table" "dialog_bot_route_table" {
-#  vpc_id = aws_vpc.dialog_bot_vpc.id
-#}
+resource "aws_default_subnet" "default_subnet_c" {
+  availability_zone = "eu-west-2c"
+}
 
-#resource "aws_route" "dialog_bot_route" {
-#  route_table_id         = aws_route_table.dialog_bot_route_table.id
-#  destination_cidr_block = "0.0.0.0/0"
-#  gateway_id             = aws_internet_gateway.dialog_bot_gateway.id
-#}
+resource "aws_alb" "application_load_balancer" {
+  name               = "dialog-bot-load-balancer" #load balancer name
+  load_balancer_type = "application"
+  subnets = [
+    "${aws_default_subnet.default_subnet_a.id}",
+    "${aws_default_subnet.default_subnet_b.id}",
+    "${aws_default_subnet.default_subnet_c.id}"
+  ]
+  security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+}
 
-#resource "aws_route_table_association" "dialog_bot_route_table_association" {
-#  subnet_id      = aws_subnet.dialog_bot_subnet.id
-#  route_table_id = aws_route_table.dialog_bot_public_route_table.id
-#}
+resource "aws_security_group" "load_balancer_security_group" {
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-#resource "aws_security_group" "dialog_bot_security_group" {
-#  name        = "dialog_bot_security_group"
-#  description = "dialog bot security group"
-#  vpc_id      = aws_vpc.dialog_bot_vpc.id
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
-#  ingress {
-#    from_port   = 0
-#    to_port     = 0
-#    protocol    = "-1"
-#    cidr_blocks = ["*.*.*.*/32"]
-#  }
+resource "aws_lb_target_group" "target_group" {
+  name        = "target-group"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = "${aws_default_vpc.default_vpc.id}"
+}
 
-#  egress {
-#    from_port   = 0
-#    to_port     = 0
-#    protocol    = "-1"
-#    cidr_blocks = ["0.0.0.0/0"] 
-#  }
-#}
+resource "aws_lb_listener" "listener" {
+  load_balancer_arn = "${aws_alb.application_load_balancer.arn}"
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.target_group.arn}"
+  }
+}
 
-#resource "aws_instance" "dialog_bot" {
-#  instance_type          = "t2.nano"
-#  vpc_security_group_ids = [aws_security_group.dialog_bot_security_group.id]
-#  subnet_id              = aws_subnet.dialog_bot_subnet.id
+resource "aws_ecs_service" "app_service" {
+  name            = "dialog-bot-service"
+  cluster         = "${aws_ecs_cluster.dialog_bot_cluster.id}"
+  task_definition = "${aws_ecs_task_definition.dialog_bot_task.arn}"
+  launch_type     = "FARGATE"
+  desired_count   = 1
 
-#  root_block_device {  
-#    volume_size = 20
-#  }
-#}
+  load_balancer {
+    target_group_arn = "${aws_lb_target_group.target_group.arn}"
+    container_name   = "${aws_ecs_task_definition.dialog_bot_task.family}"
+    container_port   = 80
+  }
 
+  network_configuration {
+    subnets          = ["${aws_default_subnet.default_subnet_a.id}", "${aws_default_subnet.default_subnet_b.id}", "${aws_default_subnet.default_subnet_c.id}"]
+    assign_public_ip = true
+    security_groups  = ["${aws_security_group.service_security_group.id}"]
+  }
+}
+
+# main.tf
+resource "aws_security_group" "service_security_group" {
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+output "app_url" {
+  value = aws_alb.application_load_balancer.dns_name
+}
