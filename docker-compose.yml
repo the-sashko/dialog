@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
+    image: dialog-bot
     container_name: dialog-bot
 
     volumes:

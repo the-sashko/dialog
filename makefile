@@ -11,6 +11,8 @@ init:
 
 	chmod -R 775 data
 
+	cd terraform && terraform init
+
 	@echo "Done!"
 
 build:
@@ -33,6 +35,7 @@ build:
 
 	rm -rf .build/data/sources/*.txt
 	rm -rf .build/data/sources/chats/*
+	rm -rf .build/data/logs/*
 
 	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
 
@@ -47,11 +50,18 @@ build:
 build-base:
 	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
 
-	docker build -t the-sashko-dialog-bot-python docker/python_setup/.
+	docker build -t dialog-bot-python docker/python_setup/.
 
-	docker tag the-sashko-dialog-bot-python:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
+	docker tag dialog-bot-python:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
 
 	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
+
+deploy:
+	cd terraform && terraform plan
+	cd terraform && terraform apply -auto-approve
+
+destroy:
+	cd terraform && terraform destroy -auto-approve
 
 run:
 	@python3 src/app.py
