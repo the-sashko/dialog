@@ -4,10 +4,11 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./app/docker/Dockerfile
+      dockerfile: ./docker/app/Dockerfile
     container_name: dialog-bot
 
     volumes:
       - .:/app
     ports:
       - "80:80"
+      - "443:443"

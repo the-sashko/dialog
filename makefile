@@ -13,25 +13,23 @@ init:
 	@echo "Done!"
 
 build:
-	docker-compose build --no-cache
-
-build-base:
-	if [ -d ".build" ]; then rm -Rf .build; fi
-
-	mkdir .build
-
-	cp docker/python_setup/Dockerfile .build/Dockerfile
-	cp requirements.txt .build/requirements.txt
-
 	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
 
-	cd .build; docker build -t the-sashko-dialog-bot-python .
+	docker-compose build
 
-	docker tag the-sashko-dialog-bot-python:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:latest
+	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.1
 
-	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:latest
+	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.1
 
-	rm -rf .build
+build-base:
+	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
+
+	docker build -t the-sashko-dialog-bot-python docker/python_setup/.
+
+	docker tag the-sashko-dialog-bot-python:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
+
+	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
+
 run:
 	@python3 src/app.py
 

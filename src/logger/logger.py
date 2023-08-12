@@ -1,8 +1,6 @@
 from os import getcwd, path, remove, mkdir, chmod
-
 import datetime
 import sys
-
 from telegram.telegram import Telegram
 
 class Logger:
