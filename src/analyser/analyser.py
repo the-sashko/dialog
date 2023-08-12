@@ -30,7 +30,7 @@ class Analyser:
         #    return Command(Command.VOICE, value)
 
         self.__logger.log('Check image command')
-        if (self.__is_image_command(message)):
+        if self.__is_image_command(message):
             value = self.__retrieve_image_command_value(message)
 
             return Command(Command.IMAGE, value)
@@ -58,6 +58,8 @@ class Analyser:
 
         if message.get_text().lower() == 'test':
             return Trigger.TEST_TRIGGER
+
+        return None
 
     def __is_voice_command(self, message: TelegramMessage) -> bool:
         return self.__is_command('say something', message)
@@ -117,7 +119,7 @@ class Analyser:
         ]
 
         #To-Do: add context to analyze
- 
+
         prompt.append({'role': 'user', 'content': message.get_text()})
         prompt.append({'role': 'system', 'content': 'Analyse what user asked to draw. Result should be just subject of ask in English'})
 

@@ -168,7 +168,7 @@ class Message:
 
         if file_path is None:
             return None
-        
+
         text = self.__transcription.transcribe(file_path)
 
         if text is None:

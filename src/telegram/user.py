@@ -21,17 +21,17 @@ class User:
 
     def is_bot(self) -> bool:
         return self.__is_bot
-    
+
     def set_name(self, name: str) -> None:
         self.__name = name
 
-    def __set_id(self, id: int) -> None:
-        self.__id = id
+    def __set_id(self, user_id: int) -> None:
+        self.__id = user_id
 
     def __set_name(self, values: dict) -> None:
-        id = values['id']
+        user_id = values['id']
 
-        self.set_name(f'user_{id}')
+        self.set_name(f'user_{user_id}')
 
         if 'username' in values:
             self.set_name(str(values['username']))
@@ -44,11 +44,11 @@ class User:
             last_name = values['last_name']
             self.set_name(f'{first_name} {last_name}')
 
-        if 'last_name' in values and not 'first_name' in values:
+        if 'last_name' in values and 'first_name' not in values:
             self.set_name(str(values['last_name']))
 
-    def __set_is_bot(self, isBot: bool) -> None:
-        self.__is_bot = isBot
+    def __set_is_bot(self, is_bot: bool) -> None:
+        self.__is_bot = is_bot
 
     def __is_values_have_valid_format(self, values: dict) -> bool:
         return 'id' in values and 'is_bot' in values

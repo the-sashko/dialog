@@ -1,8 +1,8 @@
 import json
-import requests
-from settings.settings import Settings
 from typing import Union
 from os import getcwd, path, remove
+import requests
+from settings.settings import Settings
 
 #to-do: add logs
 class File:
@@ -24,7 +24,7 @@ class File:
 
         file = self.__get_file(file_id)
 
-        if file != None and 'file_path' in file:
+        if file is not None and 'file_path' in file:
             self.__download_file(file['file_path'])
 
     def get_file_path(self) -> Union[str, None]:
@@ -50,6 +50,8 @@ class File:
                 if chunk:
                     buffer_writer.write(chunk)
 
+        return None
+
     def __get_file(self, file_id: str) -> Union[dict, None]:
         url = self.__GET_FILE_URL % (self.__token, file_id)
 
@@ -74,7 +76,5 @@ class File:
         return (
             'ok' in response and
             'result' in response and
-            (
-                type(response['result']) == dict
-            )
+            isinstance(response['result'], dict)
         )

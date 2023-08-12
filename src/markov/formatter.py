@@ -82,7 +82,7 @@ class Formatter():
             sentence = re.sub(r'\s([,;:?!]{1})', r'\g<1>', sentence)
             sentence = re.sub(r'^- ', '', sentence)
             sentence = re.sub(r'^– ', '', sentence)
-            sentence = sentence.capitalize() 
+            sentence = sentence.capitalize()
 
             formatted_text[sentence_count_index] = sentence
 
