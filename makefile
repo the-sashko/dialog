@@ -7,6 +7,7 @@ init:
 	mkdir data/download
 	mkdir data/logs
 	mkdir data/tmp
+	mkdir data/sources/chats
 
 	chmod -R 775 data
 

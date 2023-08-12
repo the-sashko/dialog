@@ -1,3 +1,4 @@
+import re
 import sqlite3
 import json
 from typing import Union
@@ -9,6 +10,7 @@ class Storage:
     __MAX_THREAD_LENGTH = 20
 
     __DATA_BASE_FILE_PATH = '%s/data/db.sqlite3'
+    __SOURCES_DIR_PATH = '%s/data/sources'
 
     __connection = None
 
@@ -45,6 +47,17 @@ class Storage:
         chat_name: str,
         message: dict
     ) -> None:
+        if (
+            chat_id > 0 and
+            'content' in message and
+            isinstance(message['content'], str) and
+            message['content'] != ''
+        ):
+            self.__save_message_to_sources(
+                chat_id,
+                message['content']
+            )
+
         self.__save_message_to_chat(
             chat_id,
             chat_name,
@@ -507,3 +520,21 @@ class Storage:
             return 0
 
         return max_id
+
+    def __save_message_to_sources(
+        self,
+        chat_id: int,
+        message: str
+    ) -> None:
+        message = re.sub(r'\s+', r' ', message)
+        message = re.sub(r'((^\s+)|(\s+$))', r'', message)
+
+        file_path = self.__SOURCES_DIR_PATH % getcwd()
+        file_path = f'{file_path}/chats/{chat_id}.txt'
+
+        if path.isfile(file_path):
+            message = f'\n{message}'
+
+        with open(file_path, 'a+') as file_pointer:
+            file_pointer.write(message)
+            file_pointer.close()

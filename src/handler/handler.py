@@ -77,6 +77,9 @@ class Handler:
             if message.get_user().get_id() == self.__telegram_bot_id:
                 return None
 
+            if message.get_chat().get_id() == self.__telegram_log_chat_id:
+                return None
+
             reply_to_message_id = message.get_id()
 
             if message.get_chat().is_private_type():
