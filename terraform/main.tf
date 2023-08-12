@@ -7,7 +7,7 @@ resource "aws_ecs_task_definition" "dialog_bot_task" {
   container_definitions    = jsonencode([
     {
       "name": "dialog-bot-task",
-      "image": "227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot",
+      "image": "227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.1",
       "essential": true,
       "portMappings": [
         {
