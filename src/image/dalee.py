@@ -3,18 +3,21 @@ import requests
 from os import getcwd, path, remove
 from typing import Union
 from settings.settings import Settings
+from logger.logger import Logger
 
-#to-do: refactoring code syle
-#to-do: add logs
 class Dalee:
     __IMAGE_SIZE = '1024x1024'
     __IMAGE_FILE_PATH = '%s/data/tmp/image.png'
     __HTTP_STATUS_OK = 200
 
+    __logger = None
+
     def __init__(self):
         config = Settings().get_open_ai_config()
 
         openai.api_key = config['api_key']
+
+        self.__logger = Logger()
 
     def create_image(self, prompt: str) -> Union[str, None]:
         try: # To-Do: add validator
@@ -24,13 +27,13 @@ class Dalee:
                 size = self.__IMAGE_SIZE
             )
 
-            return self.__downloadFile(
+            return self.__download_file(
                 response['data'][0]['url']
             )
-        except:
-            None
+        except Exception as exp:
+            self.__logger.log_error(exp)
 
-    def __downloadFile(self, url: str) -> str:
+    def __download_file(self, url: str) -> str:
         file_path = self.__IMAGE_FILE_PATH % getcwd()
 
         response = requests.get(url)

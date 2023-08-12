@@ -2,7 +2,7 @@
 
 import time
 from telegram.telegram import Telegram
-from telegram.message import Message as Telegram_Message
+from telegram.message import Message as TelegramMessage
 from handler.handler import Handler
 from logger.logger import Logger
 
@@ -36,7 +36,7 @@ class App:
         for message in messages:
             self.__handle_message(message)
 
-    def __handle_message(self, message: Telegram_Message) -> None:
+    def __handle_message(self, message: TelegramMessage) -> None:
         self.__logger.log('Start handling message from Telegram')
         self.__handler.do_handle(message)
         self.__logger.log('End handling message from Telegram')

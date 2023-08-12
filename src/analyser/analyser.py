@@ -3,7 +3,7 @@ from typing import Union
 from command.command import Command
 from command.parser import Parser
 from gpt.gpt import Gpt
-from telegram.message import Message as Telegram_Message
+from telegram.message import Message as TelegramMessage
 from logger.logger import Logger
 from trigger.trigger import Trigger
 
@@ -17,17 +17,17 @@ class Analyser:
         self.__gpt = Gpt()
         self.__logger = Logger()
 
-    def get_command(self, message: Telegram_Message) -> Union[Command, None]:
+    def get_command(self, message: TelegramMessage) -> Union[Command, None]:
         command = self.__parser.get_command_from_text(message.get_text())
 
         if command is not None:
             return command
 
-        self.__logger.log('Check voice command')
-        if (self.__is_voice_command(message)):
-            value = self.__retrieve_voice_command_value(message)
+        #self.__logger.log('Check voice command')
+        #if (self.__is_voice_command(message)):
+        #    value = self.__retrieve_voice_command_value(message)
 
-            return Command(Command.VOICE, value)
+        #    return Command(Command.VOICE, value)
 
         self.__logger.log('Check image command')
         if (self.__is_image_command(message)):
@@ -52,20 +52,20 @@ class Analyser:
 
         return mood
 
-    def get_trigger(self, message: Telegram_Message) -> Union[str, None]:
+    def get_trigger(self, message: TelegramMessage) -> Union[str, None]:
         if message.get_text().lower() == Command.IMAGE:
             return Trigger.RANDOM_IMAGE_TRIGGER
 
         if message.get_text().lower() == 'test':
             return Trigger.TEST_TRIGGER
 
-    def __is_voice_command(self, message: Telegram_Message) -> bool:
+    def __is_voice_command(self, message: TelegramMessage) -> bool:
         return self.__is_command('say something', message)
 
-    def __is_image_command(self, message: Telegram_Message) -> bool:
+    def __is_image_command(self, message: TelegramMessage) -> bool:
         return self.__is_command('draw somethig', message)
 
-    def __is_command(self, command_prompt: str, message: Telegram_Message) -> bool:
+    def __is_command(self, command_prompt: str, message: TelegramMessage) -> bool:
         prompt = [
             {'role': 'system', 'content': 'You are a text parser'}
         ]
@@ -83,8 +83,8 @@ class Analyser:
 
         return response.lower().strip() == 'true'
 
-    def __retrieve_voice_command_value(self, message: Telegram_Message) -> Union[str, None]:
-        return False # fix 'User asked to say ...'
+    def __retrieve_voice_command_value(self, message: TelegramMessage) -> Union[str, None]:
+        return None # fix 'User asked to say ...'
 
         prompt = [
             {'role': 'system', 'content': 'You are a text parser'}
@@ -111,7 +111,7 @@ class Analyser:
 
         return response
 
-    def __retrieve_image_command_value(self, message: Telegram_Message) -> Union[str, None]:
+    def __retrieve_image_command_value(self, message: TelegramMessage) -> Union[str, None]:
         prompt = [
             {'role': 'system', 'content': 'You are a text parser'}
         ]

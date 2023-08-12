@@ -3,7 +3,7 @@
 import re
 from typing import Union
 from telegram.telegram import Telegram
-from telegram.message import Message as Telegram_Message
+from telegram.message import Message as TelegramMessage
 from markov.markov import Markov
 from gpt.gpt import Gpt
 from storage.storage import Storage
@@ -11,8 +11,8 @@ from settings.settings import Settings
 from tts.tts import Tts
 from analyser.analyser import Analyser
 from chance.chance import Chance
-from command.parser import Parser as Command_Parser #To-do: refactor to Pascal case
-from command.handler import Handler as Command_Handler #To-do: refactor to Pascal case
+from command.parser import Parser as CommandParser
+from command.handler import Handler as CommandHandler
 from command.command import Command
 from logger.logger import Logger
 from trigger.trigger import Trigger
@@ -54,8 +54,8 @@ class Handler:
         self.__tts = Tts()
         self.__analyser = Analyser()
         self.__chance = Chance()
-        self.__command_parser = Command_Parser()
-        self.__command_handler = Command_Handler()
+        self.__command_parser = CommandParser()
+        self.__command_handler = CommandHandler()
         self.__logger = Logger()
         self.__trigger = Trigger()
         self.__post_processing = PostProcessing()
@@ -68,7 +68,7 @@ class Handler:
         self.__telegram_bot_id = telegram_config['bot_id']
         self.__bot_name = bot_config['name']
 
-    def do_handle(self, message: Telegram_Message) -> None:
+    def do_handle(self, message: TelegramMessage) -> None:
         try:
             if message.get_text() == None:
                 return None
@@ -190,7 +190,7 @@ class Handler:
     def __post_process(
         self,
         text: Union[str, None],
-        message: Telegram_Message,
+        message: TelegramMessage,
         is_reply_in_audio: bool
     ) -> Union[str, None]:
         return self.__post_processing.do_handle(
@@ -202,7 +202,7 @@ class Handler:
 
     def __get_reply(
         self,
-        message: Telegram_Message,
+        message: TelegramMessage,
         mood: str = 'neutral'
     ) -> Union[str, None]:
         if message.get_text() is None:
@@ -218,7 +218,7 @@ class Handler:
 
         return reply
 
-    def __is_ignore(self, message: Telegram_Message) -> bool:        
+    def __is_ignore(self, message: TelegramMessage) -> bool:        
         if message.get_chat().get_id() == self.__telegram_log_chat_id:
             return True
 
@@ -241,10 +241,10 @@ class Handler:
 
         return True
 
-    def __is_mandatory_reply(self, message: Telegram_Message) -> bool:
+    def __is_mandatory_reply(self, message: TelegramMessage) -> bool:
         return message.get_chat().is_private_type() or message.is_reply_to_me()
 
-    def __is_reply_in_audio(self, message: Telegram_Message) -> bool:
+    def __is_reply_in_audio(self, message: TelegramMessage) -> bool:
         if message.get_voice() is not None:
             return True
 
@@ -253,7 +253,7 @@ class Handler:
 
         return False
 
-    def __get_random_trigger(self, message: Telegram_Message) -> Union[str, None]:
+    def __get_random_trigger(self, message: TelegramMessage) -> Union[str, None]:
         if message.get_text() == Command.IMAGE:
             return self.__trigger.RANDOM_IMAGE_TRIGGER
 

@@ -2,7 +2,7 @@ import random
 from typing import Union
 from logger.logger import Logger
 from telegram.telegram import Telegram
-from telegram.message import Message as Telegram_Message #to-do: refactor to Pascal case
+from telegram.message import Message as TelegramMessage #to-do: refactor to Pascal case
 from gpt.gpt import Gpt
 from tts.tts import Tts
 from image.image import Image
@@ -113,7 +113,7 @@ class Script:
 
             return None
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if 'message' in data and type(data['message']) == TelegramMessage:
             message = data['message']
 
             self.__storage.save_message(
@@ -140,7 +140,7 @@ class Script:
             random.choice(self.__random_test_prompts)
         )
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if 'message' in data and type(data['message']) == TelegramMessage:
             message = data['message']
 
             self.__storage.save_message(
@@ -167,7 +167,7 @@ class Script:
             random.choice(self.__random_hello_prompts)
         )
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if 'message' in data and type(data['message']) == TelegramMessage:
             message = data['message']
 
             self.__storage.save_message(
@@ -194,7 +194,7 @@ class Script:
             random.choice(self.__random_about_me_prompts)
         )
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if 'message' in data and type(data['message']) == TelegramMessage:
             message = data['message']
 
             self.__storage.save_message(
@@ -243,7 +243,7 @@ class Script:
         if self.__chance.get(self.__CHANCE_TO_PARAPHRASE_TEXT_MESSAGE):
             reply = self.__gpt.paraphrase(reply)
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if 'message' in data and type(data['message']) == TelegramMessage:
             message = data['message']
 
             self.__storage.save_message(
@@ -286,7 +286,7 @@ class Script:
         if self.__chance.get(self.__CHANCE_TO_PARAPHRASE_VOICE_MESSAGE):
             reply = self.__gpt.paraphrase(reply)
 
-        if 'message' in data and type(data['message']) == Telegram_Message:
+        if 'message' in data and type(data['message']) == TelegramMessage:
             message = data['message']
 
             self.__storage.save_message(
@@ -331,7 +331,7 @@ class Script:
         if (
             image_promt is not None and
             'message' in data and
-            isinstance(data['message'], Telegram_Message)
+            isinstance(data['message'], TelegramMessage)
         ):
             message = data['message']
 
