@@ -118,16 +118,18 @@ class Script:
         if 'message' in data and isinstance(data['message'], TelegramMessage):
             message = data['message']
 
+            reply = random.choice(self.__random_none_prompts)
+
             self.__storage.save_message(
                 message.get_user().get_id(),
                 message.get_chat().get_id(),
                 message.get_user().get_name(),
                 message.get_chat().get_title(),
-                {'role': 'assistant', 'content': 'None'}
+                {'role': 'assistant', 'content': reply}
             )
 
         self.__telegram.send_message(
-            'None',
+            reply,
             data['chat_id'],
             data['reply_to_message_id']
         )
