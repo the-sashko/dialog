@@ -152,17 +152,20 @@ class Handler:
 
             if reply == None:
                 return None
-        
-            if is_reply_in_audio:
-                audio_file_path = self.__tts.text2audio(reply)
 
-                self.__telegram.send_voice(
-                    message.get_chat().get_id(),
-                    audio_file_path,
-                    reply_to_message_id
-                )
+            try:
+                if is_reply_in_audio:
+                    audio_file_path = self.__tts.text2audio(reply)
 
-                return None
+                    self.__telegram.send_voice(
+                        message.get_chat().get_id(),
+                        audio_file_path,
+                        reply_to_message_id
+                    )
+
+                    return None
+            except Exception as exp:
+                self.__logger.log_error(exp)
 
             self.__telegram.send_message(
                 reply,
@@ -193,7 +196,7 @@ class Handler:
         return self.__post_processing.do_handle(
             text,
             self.__is_mandatory_reply(message),
-            message.get_voice() is None,
+            message.get_voice() is not None,
             is_reply_in_audio
         )
 

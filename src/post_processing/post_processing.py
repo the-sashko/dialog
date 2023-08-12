@@ -12,7 +12,7 @@ from logger.logger import Logger
 #to-do: refactoring code syle
 #to-do: add logs
 class Post_Processing:
-    __CHANCE_TO_SMILE_FILTER = 5
+    __CHANCE_TO_SMILE_FILTER = 10
 
     __markov = None
     __gpt = None
@@ -48,8 +48,8 @@ class Post_Processing:
         if text is None and not is_mandatory_return:
             return None
 
-        if text is None and is_mandatory_return:
-            text = self.__get_reject(is_voice, True)
+        #if text is None and is_mandatory_return:
+        #    text = self.__get_reject(is_voice, True)
 
         if text is None and is_mandatory_return:
             text = self.__get_reject(is_voice, False)
@@ -70,6 +70,7 @@ class Post_Processing:
 
         return text
 
+    #To-Do improve
     def __is_reject(self, text: Union[str, None]) -> bool:
         if text is None:
             return True
@@ -102,6 +103,26 @@ class Post_Processing:
             return True
         
         pattern = r'^(.*?)не підтримую(.*?)$'
+
+        if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
+            return True
+
+        pattern = r'^(.*?)я відмов(.*?)$'
+
+        if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
+            return True
+
+        pattern = r'^(.*?)i apolog(.*?)$'
+
+        if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
+            return True
+
+        pattern = r'^(.*?)sorry(.*?)$'
+
+        if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
+            return True
+        
+        pattern = r'^(.*?)assist(.*?)$'
 
         if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
             return True
@@ -149,6 +170,8 @@ class Post_Processing:
             return None
 
         text = self.__smile_post_filter(text, is_reply_audio)
+        #to-do
+        #text = self.__misspelling_post_filter(text)
 
         if self.__is_reject(text):
             return None
