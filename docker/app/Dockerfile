@@ -1,9 +1,7 @@
-FROM python:3.9.17-alpine3.18
+FROM 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:latest
 
 COPY . /app
 WORKDIR /app
-
-RUN make test
 
 ENTRYPOINT ["make run"]
 
