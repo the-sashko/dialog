@@ -409,7 +409,7 @@ class Storage:
 
         return f'{user_id}_{chat_id}'
 
-    def __get_thread_by_id(self, id: str) -> Union [list, None]:
+    def __get_thread_by_id(self, thread_id: str) -> Union [list, None]:
         sql = '''
             SELECT thread
             FROM threads
@@ -419,7 +419,7 @@ class Storage:
 
         cursor = self.__get_cursor()
 
-        cursor.execute(sql, (id,))
+        cursor.execute(sql, (thread_id,))
 
         rows = cursor.fetchall()
 
@@ -438,12 +438,12 @@ class Storage:
 
         try:
             return json.loads(thread)
-        except:
+        except Exception:
             return None
 
     def __insert_thead(
         self,
-        id: str,
+        thread_id: str,
         user_id: int,
         chat_id: int,
         user_name: str,
@@ -464,14 +464,14 @@ class Storage:
 
         self.__get_cursor().execute(
             sql,
-            (id, user_id, chat_id, user_name, chat_name, json.dumps(thread),)
+            (thread_id, user_id, chat_id, user_name, chat_name, json.dumps(thread),)
         )
 
         self.__commit()
 
     def __update_thead(
         self,
-        id: str,
+        thread_id: str,
         thread: list
     ) -> None:
         sql = '''
@@ -483,7 +483,7 @@ class Storage:
         if len(thread) > self.__MAX_THREAD_LENGTH:
             thread.pop(0)
 
-        self.__get_cursor().execute(sql, (json.dumps(thread), id,))
+        self.__get_cursor().execute(sql, (json.dumps(thread), thread_id,))
         self.__commit()
 
     def __get_dictionary_max_id(self) -> int:
@@ -501,9 +501,9 @@ class Storage:
         if row is None :
             return 0
 
-        id = row[0]
+        max_id = row[0]
 
-        if id is None or id < 0:
+        if max_id is None or max_id < 0:
             return 0
 
-        return id
+        return max_id

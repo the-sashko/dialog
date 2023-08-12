@@ -99,7 +99,7 @@ class Message:
 
         try:
             return self.__parent.get_user().get_id() == self.__bot_id
-        except:
+        except Exception:
             return False
 
     @staticmethod
@@ -132,6 +132,8 @@ class Message:
         last_update_id_file.write(str(last_update_id))
         last_update_id_file.close()
 
+        return None
+
     def __set_id(self, message_id: int) -> None:
         self.__id = message_id
 
@@ -161,7 +163,7 @@ class Message:
 
         if voice is None:
             return None
-    
+
         file_path = voice.get_file().get_file_path()
 
         if file_path is None:
@@ -173,6 +175,8 @@ class Message:
             return None
 
         self.__set_text(text)
+
+        return None
 
     def __is_values_have_valid_message_format(self, values: dict) -> bool:
         return (

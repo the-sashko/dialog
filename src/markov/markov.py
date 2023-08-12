@@ -107,12 +107,12 @@ class Markov():
 
         chunk = self.__get_chunk_by_id(chunk_id)
 
-        if chunk == None:
+        if chunk is None:
             return None
 
         return int(random.choice(chunk))
 
-    def do_parse(self):
+    def do_parse(self) -> None:
         try:
             raw_file_path = self.__SOURCE_FILE_PATH % os.getcwd()
 
@@ -124,7 +124,7 @@ class Markov():
             if not os.path.isfile(raw_file_path):
                 self.__logger.log('File with raw data is not exists')
 
-                return False
+                return None
 
             self.__logger.log('Start parsing text')
 
@@ -173,6 +173,8 @@ class Markov():
         except Exception as exp:
             self.__logger.log_error(exp)
 
+        return None
+
     def __get_chain_by_text(self, text: str) -> list:
         formatted_text = self.__formatter.get_formatted_raw_text(text)
         formatted_text = self.__tokenizer.get_tokenized_text(formatted_text)
@@ -181,8 +183,8 @@ class Markov():
 
         return self.__get_chain_by_tokenized_text(formatted_text, [], 0)
 
-    def __get_chunk_by_id(self, id: str) -> Union[list, None]:
-        chunk = self.__storage.get_value_from_chunks_by_id(id)
+    def __get_chunk_by_id(self, chunk_id: str) -> Union[list, None]:
+        chunk = self.__storage.get_value_from_chunks_by_id(chunk_id)
 
         if chunk is None:
             return None
@@ -248,7 +250,7 @@ class Markov():
 
     def __merge_sources(self) -> None:
         result_file = self.__SOURCE_FILE_PATH % os.getcwd()
-        
+
         source_files = [f for f in os.listdir(self.__SOURCE_DIR_PATH % os.getcwd()) if f.endswith('.txt')]
 
         with open(result_file, 'w') as output_file:

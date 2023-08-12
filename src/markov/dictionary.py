@@ -5,9 +5,9 @@ from storage.storage import Storage
 #to-do: refactoring code syle
 #to-do: add logs
 class Dictionary():
-    __START_ID = -3;
-    __END_ID = -2;
-    __STOP_ID = -1;
+    __START_ID = -3
+    __END_ID = -2
+    __STOP_ID = -1
 
     start = '<START>'
     end = '<END>'
@@ -18,14 +18,14 @@ class Dictionary():
     def __init__(self):
         self.__storage = Storage()
 
-    def get_word_by_id(self, id: int) -> str:
-        if id == self.__START_ID :
+    def get_word_by_id(self, word_id: int) -> str:
+        if word_id == self.__START_ID :
             return self.start
 
-        if id == self.__END_ID :
+        if word_id == self.__END_ID :
             return self.end
 
-        return self.__get_word_from_store_by_id(id)
+        return self.__get_word_from_store_by_id(word_id)
 
     def get_id_by_word(self, word: str) -> int:
         if word == self.start :
@@ -37,10 +37,10 @@ class Dictionary():
         if word == self.stop :
             return self.__STOP_ID
 
-        id = self.__get_id_from_store_by_word(word)
+        word_id = self.__get_id_from_store_by_word(word)
 
-        if id != None :
-            return id
+        if word_id is not None :
+            return word_id
 
         return self.__save_word_to_store(word)
 
@@ -53,8 +53,8 @@ class Dictionary():
     def get_stop_id(self) -> int:
         return self.__STOP_ID
 
-    def __get_word_from_store_by_id(self, id: int) -> Union[str, None]:
-        return self.__storage.get_word_from_dictionary_by_id(id)
+    def __get_word_from_store_by_id(self, word_id: int) -> Union[str, None]:
+        return self.__storage.get_word_from_dictionary_by_id(word_id)
 
     def __get_id_from_store_by_word(self, word: str) -> Union[int, None]:
         return self.__storage.get_id_from_dictionary_by_word(word)

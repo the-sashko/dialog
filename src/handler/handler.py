@@ -70,7 +70,7 @@ class Handler:
 
     def do_handle(self, message: TelegramMessage) -> None:
         try:
-            if message.get_text() == None:
+            if message.get_text() is None:
                 return None
 
             if not message.get_chat().is_supported():
@@ -81,7 +81,7 @@ class Handler:
 
             reply_to_message_id = message.get_id()
 
-            if (message.get_chat().is_private_type()):
+            if message.get_chat().is_private_type():
                 reply_to_message_id = None
 
             self.__storage.save_message(
@@ -150,7 +150,7 @@ class Handler:
             reply = self.__get_reply(message, mood)
             reply = self.__post_process(reply, message, is_reply_in_audio)
 
-            if reply == None:
+            if reply is None:
                 return None
 
             try:
@@ -187,6 +187,8 @@ class Handler:
                 }
             )
 
+        return None
+
     def __post_process(
         self,
         text: Union[str, None],
@@ -218,7 +220,7 @@ class Handler:
 
         return reply
 
-    def __is_ignore(self, message: TelegramMessage) -> bool:        
+    def __is_ignore(self, message: TelegramMessage) -> bool:
         if message.get_chat().get_id() == self.__telegram_log_chat_id:
             return True
 

@@ -36,6 +36,7 @@ class Script:
 
     __random_image_prompts = None
     __random_voice_prompts = None
+    __random_none_prompts = None
     __random_text_prompts = None
     __random_test_prompts = None
     __random_hello_prompts = None
@@ -58,6 +59,7 @@ class Script:
 
         self.__random_image_prompts = replies_config['random_images']
         self.__random_voice_prompts = replies_config['random_voices']
+        self.__random_none_prompts = replies_config['random_none']
         self.__random_text_prompts = replies_config['random_texts']
         self.__random_test_prompts = replies_config['random_tests']
         self.__random_hello_prompts = replies_config['random_hello']
@@ -113,7 +115,7 @@ class Script:
 
             return None
 
-        if 'message' in data and type(data['message']) == TelegramMessage:
+        if 'message' in data and isinstance(data['message'], TelegramMessage):
             message = data['message']
 
             self.__storage.save_message(
@@ -129,6 +131,8 @@ class Script:
             data['chat_id'],
             data['reply_to_message_id']
         )
+
+        return None
 
     def __do_test(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
@@ -157,6 +161,8 @@ class Script:
             data['reply_to_message_id']
         )
 
+        return None
+
     def __do_hello(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute hello script. Invalid data provided')
@@ -184,6 +190,8 @@ class Script:
             data['reply_to_message_id']
         )
 
+        return None
+
     def __do_about_me(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data or 'reply_to_message_id' not in data:
             self.__logger.log_error('Can not execute about_me script. Invalid data provided')
@@ -210,6 +218,8 @@ class Script:
             data['chat_id'],
             data['reply_to_message_id']
         )
+
+        return None
 
     def __get_random_text(self) -> Union[str, None]:
         random_text = random.choice(self.__random_text_prompts)
@@ -259,6 +269,8 @@ class Script:
             data['chat_id']
         )
 
+        return None
+
     def __do_random_voice(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data:
             self.__logger.log_error('Can not execute random_voice script. Invalid data provided')
@@ -303,6 +315,8 @@ class Script:
             data['chat_id'],
             voice_file_path
         )
+
+        return None
 
     def __do_random_image(self, data: Union[dict, None] = None) -> None:
         if data is None or 'chat_id' not in data:
@@ -350,3 +364,5 @@ class Script:
             None,
             image_file_path
         )
+
+        return None
