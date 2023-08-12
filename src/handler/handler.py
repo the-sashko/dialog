@@ -11,12 +11,12 @@ from settings.settings import Settings
 from tts.tts import Tts
 from analyser.analyser import Analyser
 from chance.chance import Chance
-from command.parser import Parser as Command_Parser
-from command.handler import Handler as Command_Handler
+from command.parser import Parser as Command_Parser #To-do: refactor to Pascal case
+from command.handler import Handler as Command_Handler #To-do: refactor to Pascal case
 from command.command import Command
 from logger.logger import Logger
 from trigger.trigger import Trigger
-from post_processing.post_processing import Post_Processing
+from post_processing.post_processing import PostProcessing
 
 #to-do: refactoring code syle
 #to-do: add logs
@@ -58,7 +58,7 @@ class Handler:
         self.__command_handler = Command_Handler()
         self.__logger = Logger()
         self.__trigger = Trigger()
-        self.__post_processing = Post_Processing()
+        self.__post_processing = PostProcessing()
 
         telegram_config = Settings().get_telegram_config()
         bot_config = Settings().get_bot_config()

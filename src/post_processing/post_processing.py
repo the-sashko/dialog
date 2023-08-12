@@ -11,7 +11,7 @@ from logger.logger import Logger
 
 #to-do: refactoring code syle
 #to-do: add logs
-class Post_Processing:
+class PostProcessing:
     __CHANCE_TO_SMILE_FILTER = 10
 
     __markov = None

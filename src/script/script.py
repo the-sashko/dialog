@@ -2,7 +2,7 @@ import random
 from typing import Union
 from logger.logger import Logger
 from telegram.telegram import Telegram
-from telegram.message import Message as Telegram_Message
+from telegram.message import Message as Telegram_Message #to-do: refactor to Pascal case
 from gpt.gpt import Gpt
 from tts.tts import Tts
 from image.image import Image
@@ -10,7 +10,7 @@ from storage.storage import Storage
 from settings.settings import Settings
 from chance.chance import Chance
 from markov.markov import Markov
-from post_processing.post_processing import Post_Processing
+from post_processing.post_processing import PostProcessing
 
 class Script:
     TEST_SCRIPT = 'test'
@@ -50,7 +50,7 @@ class Script:
         self.__storage = Storage()
         self.__chance = Chance()
         self.__markov = Markov()
-        self.__post_processing = Post_Processing()
+        self.__post_processing = PostProcessing()
 
         settings = Settings()
 
