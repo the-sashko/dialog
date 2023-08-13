@@ -2,6 +2,7 @@ FROM python:3.9.17-alpine3.18
 
 RUN apk add build-base=0.5-r3 --no-cache
 RUN apk add linux-headers=6.3-r0 --no-cache
+RUN apk add ffmpeg=6.0-r15 --no-cache
 
 RUN pip3 install datetime==v5.2
 RUN pip3 install grpcio==v1.57.0

@@ -7,8 +7,16 @@ resource "aws_ecs_task_definition" "dialog_bot_task" {
   container_definitions    = jsonencode([
     {
       "name": "dialog-bot-task",
-      "image": "227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.1",
+      "image": "227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.",
       "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "${aws_cloudwatch_log_group.dialog_bot_log_group.name}",
+          "awslogs-region": "eu-west-2",
+          "awslogs-stream-prefix": "dialog-bot"
+        }
+      },
       "portMappings": [
         {
           "containerPort": 80,
@@ -67,17 +75,20 @@ resource "aws_default_subnet" "default_subnet_c" {
 }
 
 resource "aws_alb" "application_load_balancer" {
-  name               = "dialog-bot-load-balancer" #load balancer name
+  name               = "dialog-bot-load-balancer"
   load_balancer_type = "application"
   subnets = [
     "${aws_default_subnet.default_subnet_a.id}",
     "${aws_default_subnet.default_subnet_b.id}",
     "${aws_default_subnet.default_subnet_c.id}"
   ]
-  security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+  security_groups = [
+    "${aws_security_group.allow_http.id}",
+    "${aws_security_group.allow_https.id}"
+  ]
 }
 
-resource "aws_security_group" "load_balancer_security_group" {
+resource "aws_security_group" "allow_http" {
   ingress {
     from_port   = 80
     to_port     = 80
@@ -86,10 +97,28 @@ resource "aws_security_group" "load_balancer_security_group" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
+
+resource "aws_security_group" "allow_https" {
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 }
 
@@ -125,29 +154,23 @@ resource "aws_ecs_service" "app_service" {
   }
 
   network_configuration {
-    subnets          = ["${aws_default_subnet.default_subnet_a.id}", "${aws_default_subnet.default_subnet_b.id}", "${aws_default_subnet.default_subnet_c.id}"]
+    subnets          = [
+        "${aws_default_subnet.default_subnet_a.id}",
+        "${aws_default_subnet.default_subnet_b.id}",
+        "${aws_default_subnet.default_subnet_c.id}"
+    ]
     assign_public_ip = true
-    security_groups  = ["${aws_security_group.service_security_group.id}"]
-  }
-}
-
-# main.tf
-resource "aws_security_group" "service_security_group" {
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups  = [
+        "${aws_security_group.allow_http.id}",
+        "${aws_security_group.allow_https.id}"
+    ]
   }
 }
 
 output "app_url" {
   value = aws_alb.application_load_balancer.dns_name
+}
+
+resource "aws_cloudwatch_log_group" "dialog_bot_log_group" {
+  name = "dialog-bot-log-group"
 }

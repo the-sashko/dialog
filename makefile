@@ -24,6 +24,7 @@ build:
 	cp -r data .build/data
 	cp -r docker .build/docker
 	cp makefile .build/makefile
+	rm -rf .build/docker/python_setup
 
 	cd .build && make clean
 
@@ -36,14 +37,15 @@ build:
 	rm -rf .build/data/sources/*.txt
 	rm -rf .build/data/sources/chats/*
 	rm -rf .build/data/logs/*
+	rm .build/makefile
 
 	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
 
 	cd .build && docker-compose build
 
-	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.1
+	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.4
 
-	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.1
+	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.4
 
 	rm -rf .build
 
@@ -52,9 +54,9 @@ build-base:
 
 	docker build -t dialog-bot-python docker/python_setup/.
 
-	docker tag dialog-bot-python:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
+	docker tag dialog-bot-python:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.2
 
-	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.1
+	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.0.2
 
 deploy:
 	cd terraform && terraform validate
@@ -68,10 +70,10 @@ run:
 	@python3 src/app.py
 
 run-dev:
-	@echo "Done!"
+	@python3 src/app.py
 
 run-beta:
-	@echo "Done!"
+	@python3 src/app.py
 
 parse:
 	@python3 src/markov_parseer.py
