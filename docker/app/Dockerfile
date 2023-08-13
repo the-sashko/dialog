@@ -9,5 +9,5 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-CMD [ "python", "./srs/app.py" ]
+CMD [ "python", "-u", "./srs/app.py" ]
 
