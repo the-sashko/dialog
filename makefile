@@ -39,13 +39,16 @@ build:
 	rm -rf .build/data/logs/*
 	rm .build/makefile
 
+	mv .build build1
+	exit 1
+
 	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
 
 	cd .build && docker-compose build
 
-	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.4
+	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.1.0
 
-	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.0.4
+	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.1.0
 
 	rm -rf .build
 
