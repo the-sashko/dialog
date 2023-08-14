@@ -1,13 +1,15 @@
 #!/usr/local/bin/python3
 
 import time
+import os
 from telegram.telegram import Telegram
 from telegram.message import Message as TelegramMessage
 from handler.handler import Handler
 from logger.logger import Logger
+from dotenv import load_dotenv
 
 class App:
-    __LOOP_DELAY = 0.5
+    __LOOP_DELAY = 1
 
     __telegram = None
     __handler = None
@@ -17,9 +19,16 @@ class App:
         self.__telegram = Telegram()
         self.__handler = Handler()
         self.__logger = Logger()
+        load_dotenv()
 
     def run(self) -> None:
         self.__logger.log('Starting...')
+
+        app_version = os.getenv('DIALOG_APP_VERSION')
+
+        self.__telegram.send_message_to_log_chat(
+            f'Bot ({app_version}) started'
+        )
 
         while True:
             self.__loop()

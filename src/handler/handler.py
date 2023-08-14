@@ -67,6 +67,12 @@ class Handler:
         self.__bot_name = bot_config['name']
 
     def do_handle(self, message: TelegramMessage) -> None:
+        if (
+            not message.get_chat().is_admin_chat() and
+            not message.get_chat().is_main_chat()
+        ):
+            return self.do_simple_handle()
+
         try:
             if message.get_text() is None:
                 return None
@@ -173,6 +179,87 @@ class Handler:
                 message.get_chat().get_id(),
                 reply_to_message_id
             )
+        except Exception as exp:
+            self.__logger.log_error(exp)
+
+            if not self.__is_mandatory_reply(message):
+                return None
+
+            self.__trigger.fire(
+                self.__trigger.NONE_TRIGGER,
+                {
+                    'chat_id': message.get_chat().get_id(),
+                    'reply_to_message_id': reply_to_message_id,
+                    'message': message
+                }
+            )
+
+        return None
+
+    def do_simple_handle(self, message: TelegramMessage) -> None:
+        try:
+            if message.get_text() is None:
+                return None
+
+            if not message.get_chat().is_supported():
+                return None
+
+            if message.get_user().get_id() == self.__telegram_bot_id:
+                return None
+
+            if message.get_chat().get_id() == self.__telegram_log_chat_id:
+                return None
+        
+            if message.get_voice() is not None:
+                return None
+
+            reply_to_message_id = message.get_id()
+
+            if message.get_chat().is_private_type():
+                reply_to_message_id = None
+
+            self.__storage.save_message(
+                message.get_user().get_id(),
+                message.get_chat().get_id(),
+                message.get_user().get_name(),
+                message.get_chat().get_title(),
+                {"role": "user", "content": message.get_text()}
+            )
+
+            is_ignore = self.__is_ignore(message)
+            trigger_name = None
+
+            if is_ignore:
+                trigger_name = self.__get_random_trigger(message)
+
+            if trigger_name != self.__trigger.RANDOM_TEXT_TRIGGER:
+                trigger_name = None
+
+            if is_ignore and trigger_name is None:
+                return None
+
+            if trigger_name is not None:
+                return self.__trigger.fire(
+                    trigger_name,
+                    {
+                        'chat_id': message.get_chat().get_id(),
+                        'reply_to_message_id': reply_to_message_id,
+                        'message': message
+                    }
+                )
+
+            reply = self.__get_reply(message)
+            reply = self.__post_process(reply, message, False)
+
+            if reply is None:
+                return None
+
+            self.__telegram.send_message(
+                reply,
+                message.get_chat().get_id(),
+                reply_to_message_id
+            )
+
         except Exception as exp:
             self.__logger.log_error(exp)
 

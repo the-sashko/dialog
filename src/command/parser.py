@@ -29,6 +29,11 @@ class Parser:
         if command is not None:
             return command
 
+        command = self.__get_command_by_type(text, Command.VERSION)
+
+        if command is not None:
+            return command
+
         return None
 
     def __get_command_by_type(

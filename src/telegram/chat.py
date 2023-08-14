@@ -14,6 +14,7 @@ class Chat:
     __type = __TYPE_UNSUPPORTED
 
     __admin_chat_id = None
+    __main_chat_id = None
 
     def __init__(self, values: dict):
         if not self.__is_values_have_valid_format(values):
@@ -26,6 +27,7 @@ class Chat:
         telegram_config = Settings().get_telegram_config()
 
         self.__admin_chat_id = telegram_config['admin_chat_id']
+        self.__main_chat_id = telegram_config['main_chat_id']
 
     def get_id(self) -> int:
         return self.__id
@@ -47,6 +49,9 @@ class Chat:
 
     def is_admin_chat(self) -> bool:
         return self.__admin_chat_id == self.__id
+
+    def is_main_chat(self) -> bool:
+        return self.__main_chat_id == self.__id
 
     def __set_id(self, id: int) -> None:
         self.__id = id

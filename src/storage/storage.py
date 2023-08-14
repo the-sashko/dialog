@@ -48,11 +48,13 @@ class Storage:
         message: dict
     ) -> None:
         if (
-            chat_id > 0 and
-            'content' in message and
-            isinstance(message['content'], str) and
-            message['content'] != ''
+            'content' not in message or
+            not isinstance(message['content'], str) or
+            message['content'] == ''
         ):
+            return None
+
+        if chat_id > 0:
             self.__save_message_to_sources(
                 chat_id,
                 message['content']
@@ -528,6 +530,12 @@ class Storage:
     ) -> None:
         message = re.sub(r'\s+', r' ', message)
         message = re.sub(r'((^\s+)|(\s+$))', r'', message)
+        #message = re.sub(r'(\[([^\[\]])+\])', r'', message)
+        message = re.sub(r'\s+', r' ', message)
+        message = re.sub(r'((^\s+)|(\s+$))', r'', message)
+
+        if message == '':
+            return None
 
         file_path = self.__SOURCES_DIR_PATH % getcwd()
         file_path = f'{file_path}/chats/{chat_id}.txt'

@@ -1,3 +1,5 @@
+include .env
+
 default:
 	@echo "Invalid target"
 
@@ -24,6 +26,8 @@ build:
 	cp -r data .build/data
 	cp -r docker .build/docker
 	cp makefile .build/makefile
+	cp .env .build/.env
+	cp docker-compose.yml .build/docker-compose.yml
 	rm -rf .build/docker/python_setup
 
 	cd .build && make clean
@@ -32,6 +36,11 @@ build:
 
 	if [ -f ".build/data/db.sqlite3" ]; then rm -rf .build/data/db.sqlite3; fi
 
+	rm -rf .build/data/sources/*.txt
+	rm -rf .build/data/sources/chats/*
+
+	cp install/data/sources/raw.txt .build/data/sources/raw.txt
+
 	cd .build && make parse
 
 	rm -rf .build/data/sources/*.txt
@@ -39,16 +48,13 @@ build:
 	rm -rf .build/data/logs/*
 	rm .build/makefile
 
-	mv .build build1
-	exit 1
-
 	aws ecr get-login-password --region eu-west-2 --profile dialog-bot-deployment-user | docker login --username AWS --password-stdin 227900353800.dkr.ecr.eu-west-2.amazonaws.com
 
 	cd .build && docker-compose build
 
-	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.1.0
+	docker tag dialog-bot:latest 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:${DIALOG_APP_VERSION}
 
-	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:v0.1.0
+	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot:${DIALOG_APP_VERSION}
 
 	rm -rf .build
 
@@ -62,6 +68,8 @@ build-base:
 	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.1.0
 
 deploy:
+	export TF_VAR_app_version=${DIALOG_APP_VERSION}
+
 	cd terraform && terraform validate
 	cd terraform && terraform plan
 	cd terraform && terraform apply -auto-approve
@@ -70,12 +78,6 @@ destroy:
 	cd terraform && terraform destroy -auto-approve
 
 run:
-	@python3 src/app.py
-
-run-dev:
-	@python3 src/app.py
-
-run-beta:
 	@python3 src/app.py
 
 parse:

@@ -6,6 +6,7 @@ class Command:
     ASCII = '[ascii]'
     SAY = '[say]'
     SAY_ALL = '[say_all]'
+    VERSION = '[version]'
 
     __type = None
 

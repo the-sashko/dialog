@@ -1,3 +1,4 @@
+import os
 from typing import Union
 import openai
 from settings.settings import Settings
@@ -59,7 +60,12 @@ class Gpt:
             mood
         )
 
-        reply = self.get(prompt)
+        model = self.__get_default_model()
+
+        if self.__can_use_enhanced_model(message):
+            model = self.__get_enhanced_model()
+
+        reply = self.get(prompt, model)
 
         if reply is None:
             return None
@@ -95,10 +101,9 @@ class Gpt:
         if mood != 'neutral':
             prompt.append({'role': 'system', 'content': f'Give ansver is {mood} style'})
 
-        text = self.get(
-            prompt,
-            self.GPT_3_MODEL
-        )
+        model = self.__get_default_model()
+
+        text = self.get(prompt, model)
 
         if text is None:
             return None
@@ -164,11 +169,17 @@ class Gpt:
             context = self.__DEFAULT_PROMPT
 
         for context_message in context:
+            if (
+                context_message['content'] is None or
+                context_message['content'] == ''
+            ):
+                continue;
+
             prompt.append(context_message)
 
         last_prompt_reply = prompt[-1]
 
-        if parrent_message is not None and last_prompt_reply['content'] == parrent_message:
+        if parrent_message is not None and parrent_message != '' and last_prompt_reply['content'] == parrent_message:
             #To-Do move current message to last
             prompt.append({'role': 'assistant', 'content': parrent_message}) #To-Do: fix role (parent message can be from bot and user)
 
@@ -180,14 +191,32 @@ class Gpt:
         if last_prompt_reply['role'] == 'user' and last_prompt_reply['content'] == message:
             return prompt
 
-        prompt.append({'role': 'user', 'content': message})
+        if message is not None and message != '':
+            prompt.append({'role': 'user', 'content': message})
 
         return prompt
 
     def __get_default_model(self) -> str:
-        mode = 'dev'#To-Do
+        model = os.getenv('DIALOG_DEFAULT_GPT_MODEL')
 
-        if mode == 'dev':
-            return self.GPT_3_MODEL
+        if model is None or model == '':
+            model = self.GPT_3_MODEL
 
-        return self.GPT_4_MODEL # switch to GPT_4_MODEL_32K in future
+        return model
+
+    def __get_enhanced_model(self) -> str:
+        model = os.getenv('DIALOG_DEFAULT_GPT_MODEL_ENHANCED')
+
+        if model is None or model == '':
+            model = self.__get_default_model()
+
+        return model
+
+    def __can_use_enhanced_model(self, message: TelegramMessage) -> bool:
+        if (message.get_chat().is_admin_chat()):
+            return True
+
+        if (message.get_chat().is_main_chat()):
+            return True
+
+        return False

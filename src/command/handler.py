@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import re
+import os
 from typing import Union
 from telegram.telegram import Telegram
 from telegram.message import Message as TelegramMessage
@@ -74,7 +75,40 @@ class Handler:
             self.__do_command_say_all(command, message)
             self.__logger.log(f'End handling {Command.SAY_ALL} command')
 
+        if command.get_type() == Command.VERSION:
+            self.__logger.log(f'Start handling {Command.VERSION} command')
+            self.__do_command_version(command, message, reply_to_message_id)
+            self.__logger.log(f'End handling {Command.VERSION} command')
+
         self.__logger.log('End handling commands')
+
+    def __do_command_version(
+            self,
+            command: Command,
+            message: TelegramMessage,
+            reply_to_message_id: Union[int, None]
+    ) -> None:
+        self.__logger.log('Start sending version message')
+
+        app_version = os.getenv('DIALOG_APP_VERSION')
+
+        self.__telegram.send_message(
+            app_version,
+            message.get_chat().get_id(),
+            reply_to_message_id
+        )
+
+        self.__logger.log('End sending version message')
+
+        self.__storage.save_message(
+            message.get_user().get_id(),
+            message.get_chat().get_id(),
+            message.get_user().get_name(),
+            message.get_chat().get_title(),
+            {'role': 'assistant', 'content': command.get_value()}
+        )
+
+        return None
 
     def __do_command_voice(
             self,
