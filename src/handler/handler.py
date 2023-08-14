@@ -67,23 +67,29 @@ class Handler:
         self.__bot_name = bot_config['name']
 
     def do_handle(self, message: TelegramMessage) -> None:
-        if (
-            not message.get_chat().is_admin_chat() and
-            not message.get_chat().is_main_chat()
-        ):
-            return self.do_simple_handle()
+        #if (
+        #    not message.get_chat().is_admin_chat() and
+        #    not message.get_chat().is_main_chat()
+        #):
+        #    return self.do_simple_handle(message)
 
         try:
             if message.get_text() is None:
+                self.__logger.log('Message text is empty. Skip')
                 return None
 
+            self.__logger.log(f'Message text is {message.get_text()}')
+
             if not message.get_chat().is_supported():
+                self.__logger.log(f'Chat type is not supproted. Skip')
                 return None
 
             if message.get_user().get_id() == self.__telegram_bot_id:
+                self.__logger.log(f'This is my message. Skip')
                 return None
 
             if message.get_chat().get_id() == self.__telegram_log_chat_id:
+                self.__logger.log(f'This is log chat. Skip')
                 return None
 
             reply_to_message_id = message.get_id()
@@ -106,6 +112,7 @@ class Handler:
                 trigger_name = self.__get_random_trigger(message)
 
             if is_ignore and trigger_name is None:
+                self.__logger.log(f'This message should be ignored. Skip')
                 return None
 
             self.__logger.log('Start retrieving trigger from Telegram message')

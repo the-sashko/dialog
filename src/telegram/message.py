@@ -25,20 +25,29 @@ class Message:
     __bot_id = None
 
     def __init__(self, values: dict):
-        self.__transcription = Transcription()
+        try:
+            self.__transcription = Transcription()
 
-        telegram_config = Settings().get_telegram_config()
+            telegram_config = Settings().get_telegram_config()
 
-        self.__bot_id = telegram_config['bot_id']
+            self.__bot_id = telegram_config['bot_id']
 
-        self.__map_message_values(values)
+            self.__map_message_values(values)
 
-        self.__transcribe_voice()
+            self.__transcribe_voice()
 
-        if self.get_update_id() is not None:
-            self.__save_last_update_id(self.get_update_id())
+            if self.get_update_id() is not None:
+                self.__save_last_update_id(self.get_update_id())
+        except Exception as exp:
+            if self.get_update_id() is not None:
+                self.__save_last_update_id(self.get_update_id())
+
+            raise exp
 
     def __map_message_values(self, values: dict):
+        if 'update_id' in values:
+            self.__set_update_id(int(values['update_id']))
+
         # case if index 'message' is missing in payload but index 'result' exists
         # it happens if response after sending message
         if 'message' not in values and 'message_id' in values:
