@@ -9,7 +9,7 @@ from logger.logger import Logger
 from dotenv import load_dotenv
 
 class App:
-    __LOOP_DELAY = 1
+    __LOOP_DELAY = 15
 
     __telegram = None
     __handler = None

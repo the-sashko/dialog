@@ -25,7 +25,7 @@ class Handler:
     __CHANCE_TO_REPLY_IN_AUDIO = 1
     __CHANCE_TO_RANDOM_TEST = 1
     __CHANCE_TO_RANDOM_VOICE = 1
-    __CHANCE_TO_RANDOM_IMAGE = 2
+    __CHANCE_TO_RANDOM_IMAGE = 5
 
     __telegram = None
     __markov = None
@@ -115,15 +115,18 @@ class Handler:
                 self.__logger.log(f'This message should be ignored. Skip')
                 return None
 
-            self.__logger.log('Start retrieving trigger from Telegram message')
+            #TO-DO: tmp off analyzer - START
+            #self.__logger.log('Start retrieving trigger from Telegram message')
 
-            if trigger_name is None:
-                trigger_name = self.__analyser.get_trigger(message)
+            #if trigger_name is None:
+            #    trigger_name = self.__analyser.get_trigger(message)
 
-            if trigger_name is not None:
-                self.__logger.log(f'Found {trigger_name} trigger')
+            #if trigger_name is not None:
+            #    self.__logger.log(f'Found {trigger_name} trigger')
 
-            self.__logger.log('End retrieving trigger from Telegram message')
+            #self.__logger.log('End retrieving trigger from Telegram message')
+
+            #TO-DO: tmp off analyzer - END
 
             if trigger_name is not None:
                 return self.__trigger.fire(

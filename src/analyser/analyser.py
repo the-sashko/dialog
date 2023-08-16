@@ -29,11 +29,11 @@ class Analyser:
 
         #    return Command(Command.VOICE, value)
 
-        self.__logger.log('Check image command')
-        if self.__is_image_command(message):
-            value = self.__retrieve_image_command_value(message)
+        #self.__logger.log('Check image command')
+        #if self.__is_image_command(message):
+        #    value = self.__retrieve_image_command_value(message)
 
-            return Command(Command.IMAGE, value)
+        #    return Command(Command.IMAGE, value)
 
         return None
 

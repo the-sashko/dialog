@@ -30,19 +30,17 @@ build:
 	cp docker-compose.yml .build/docker-compose.yml
 	rm -rf .build/docker/python_setup
 
-	cd .build && make clean
+	rm -rf .build/data/download/*
+	rm -rf .build/data/tmp/*
 
 	rm -rf .build/data/logs/*
 
 	if [ -f ".build/data/db.sqlite3" ]; then rm -rf .build/data/db.sqlite3; fi
 
+	#cd .build && make parse
+	rm .build/src/cron.py
 	rm -rf .build/data/sources/*.txt
 	rm -rf .build/data/sources/chats/*
-
-	cp install/data/sources/raw.txt .build/data/sources/raw.txt
-
-	cd .build && make parse
-
 	rm -rf .build/data/sources/*.txt
 	rm -rf .build/data/sources/chats/*
 	rm -rf .build/data/logs/*
@@ -68,11 +66,9 @@ build-base:
 	docker push 227900353800.dkr.ecr.eu-west-2.amazonaws.com/the-sashko-dialog-bot-python:v0.1.0
 
 deploy:
-	export TF_VAR_app_version=${DIALOG_APP_VERSION}
-
 	cd terraform && terraform validate
-	cd terraform && terraform plan
-	cd terraform && terraform apply -auto-approve
+	cd terraform && terraform plan -var="app_version=${DIALOG_APP_VERSION}"
+	cd terraform && terraform apply -auto-approve -var="app_version=${DIALOG_APP_VERSION}"
 
 destroy:
 	cd terraform && terraform destroy -auto-approve
@@ -80,11 +76,8 @@ destroy:
 run:
 	@python3 src/app.py
 
-parse:
-	@python3 src/markov_parseer.py
-
-clean:
+cron:
 	@rm -rf data/download/*
 	@rm -rf data/tmp/*
+	@python3 src/cron.py
 
-	@echo "Done!"
