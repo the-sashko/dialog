@@ -44,7 +44,7 @@ class Dalee:
         if response.status_code != self.__HTTP_STATUS_OK:
             return None
 
-        with open(file_path, 'wb') as buffer_writer:
+        with open(file_path, 'wb', -1, 'utf-8') as buffer_writer:
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
                     buffer_writer.write(chunk)

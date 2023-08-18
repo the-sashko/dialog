@@ -47,7 +47,7 @@ class Settings:
         if not path.exists(config_file_path) or not path.isfile(config_file_path):
             raise Exception(f'Config file {config_name} not found')
 
-        configFile = open(config_file_path, 'r')
+        configFile = open(config_file_path, 'r', -1, 'utf-8')
 
         self.__data[config_name] = json.loads(configFile.read())
 

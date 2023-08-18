@@ -130,7 +130,7 @@ class Markov():
 
             self.__logger.log('Start formatting raw txt')
 
-            raw_file = open(raw_file_path, 'r')
+            raw_file = open(raw_file_path, 'r', -1, 'utf-8')
             raw_text = raw_file.read()
 
             formatted_text = self.__formatter.get_formatted_raw_text(
@@ -253,8 +253,8 @@ class Markov():
 
         source_files = [f for f in os.listdir(self.__SOURCE_DIR_PATH % os.getcwd()) if f.endswith('.txt')]
 
-        with open(result_file, 'w') as output_file:
+        with open(result_file, 'w', -1, 'utf-8') as output_file:
             for source_file in source_files:
-                with open(os.path.join(self.__SOURCE_DIR_PATH % os.getcwd(), source_file), 'r') as input_file:
+                with open(os.path.join(self.__SOURCE_DIR_PATH % os.getcwd(), source_file), 'r', -1, 'utf-8') as input_file:
                     output_file.write(input_file.read())
                     output_file.write('\n')

@@ -12,7 +12,7 @@ class Transcription:
         openai.api_key = config['api_key']
 
     def transcribe(self, audio_file_path: str) -> Union[str, None]:
-        audio_file = open(audio_file_path, 'rb')
+        audio_file = open(audio_file_path, 'rb', -1, 'utf-8')
 
         transcript = openai.Audio.transcribe(
             self.__WHISPER_1_MODEL,

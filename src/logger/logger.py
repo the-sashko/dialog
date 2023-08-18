@@ -37,7 +37,7 @@ class Logger:
 
         message = self.__LOG_MESSAGE_FORMAT % (current_time, message)
 
-        log_file = open(log_file_path, 'a')
+        log_file = open(log_file_path, 'a', -1, 'utf-8')
 
         log_file.write(message)
         log_file.close()
@@ -107,7 +107,7 @@ class Logger:
 
     def __create_log_file(self, log_file_path: str):
         if not path.exists(log_file_path) or not path.isfile(log_file_path):
-            with open(log_file_path, 'a'):
+            with open(log_file_path, 'a', -1, 'utf-8'):
                 pass
 
         chmod(log_file_path, 0o744)

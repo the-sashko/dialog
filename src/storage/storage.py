@@ -543,6 +543,6 @@ class Storage:
         if path.isfile(file_path):
             message = f'\n{message}'
 
-        with open(file_path, 'a+') as file_pointer:
+        with open(file_path, 'a+', -1, 'utf-8') as file_pointer:
             file_pointer.write(message)
             file_pointer.close()

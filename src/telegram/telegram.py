@@ -75,7 +75,7 @@ class Telegram:
 
         url = self.__SEND_PHOTO_URL % (self.__token, replay_to_message_id_param)
 
-        with open(file_path, 'rb') as image_file:
+        with open(file_path, 'rb', -1, 'utf-8') as image_file:
             response = requests.post(url, data=data, files={'photo': image_file})
 
         if response.status_code != self.__HTTP_STATUS_OK:
@@ -108,7 +108,7 @@ class Telegram:
 
         url = self.__SEND_VOICE_URL % (self.__token, replay_to_message_id_param)
 
-        with open(file_path, 'rb') as voice_file:
+        with open(file_path, 'rb', -1, 'utf-8') as voice_file:
             response = requests.post(url, data=data, files={'voice': voice_file})
 
         if response.status_code != self.__HTTP_STATUS_OK:

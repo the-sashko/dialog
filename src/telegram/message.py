@@ -118,7 +118,7 @@ class Message:
         if not path.exists(last_update_id_file_path) or not path.isfile(last_update_id_file_path):
             return 0
 
-        last_update_id_file = open(last_update_id_file_path, 'r')
+        last_update_id_file = open(last_update_id_file_path, 'r', -1, 'utf-8')
 
         last_update_id = last_update_id_file.read()
 
@@ -137,7 +137,7 @@ class Message:
         if last_update_id_from_file > last_update_id:
             return None
 
-        last_update_id_file = open(last_update_id_file_path, 'w')
+        last_update_id_file = open(last_update_id_file_path, 'w', -1, 'utf-8')
         last_update_id_file.write(str(last_update_id))
         last_update_id_file.close()
 
