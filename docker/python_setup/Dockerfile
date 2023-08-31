@@ -13,3 +13,4 @@ RUN pip3 install pillow==v10.0.0
 RUN pip3 install pydub==v0.25.1
 RUN pip3 install requests==v2.31.0
 RUN pip3 install stability_sdk==v0.8.4
+RUN pip3 install boto3==v1.28.30

@@ -43,8 +43,8 @@ class Parser:
     ) -> Union[Command, None]:
         pattern = r'^' + re.escape(command_type) + r'(.*?)$'
 
-        if (re.search(pattern, text, flags=re.IGNORECASE) is not None):
-            value = re.sub(pattern, r'\g<1>', text, 0, re.IGNORECASE)
+        if (re.search(pattern, text, flags=re.IGNORECASE | re.S) is not None):
+            value = re.sub(pattern, r'\g<1>', text, 0, re.IGNORECASE | re.S)
             value = re.sub(r'\s+', r' ', value)
             value = re.sub(r'((^\s+)|(\s+$))', r'', value)
 

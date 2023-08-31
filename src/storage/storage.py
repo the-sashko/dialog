@@ -26,16 +26,18 @@ class Storage:
         user_id: int,
         chat_id: int
     ) -> Union[list, None]:
-        thread = self.__get_thread_by_user_id_and_chat_id(
-            user_id,
-            chat_id
-        )
+        #thread = self.__get_thread_by_user_id_and_chat_id(
+        #    user_id,
+        #    chat_id
+        #)
+
+        thread = self.__get_thread_by_chat_id(chat_id)
+
+        #if thread is None:
+        #    thread = self.__get_thread_by_chat_id(chat_id)
 
         if thread is None:
             thread = self.__get_thread_by_user_id(user_id)
-
-        if thread is None:
-            thread = self.__get_thread_by_chat_id(chat_id)
 
         return thread
 

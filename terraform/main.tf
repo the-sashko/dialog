@@ -137,3 +137,42 @@ resource "aws_cloudwatch_log_group" "dialog_bot_log_group" {
   name = "dialog-bot-log-group"
   retention_in_days = 1
 }
+
+#resource "aws_cloudwatch_event_rule" "markov_parser" {
+#  name                = "markov-parser"
+#  schedule_expression = "rate(4 hours)"
+#}
+
+#resource "aws_cloudwatch_event_target" "dialog_bot_target" {
+#  rule      = aws_cloudwatch_event_rule.markov_parser.name
+#  target_id = "dialog-bot-target"
+#  arn       = aws_ecs_cluster.dialog_bot_cluster.arn
+
+#  ecs_target {
+#    task_count          = 1
+#    task_definition_arn = aws_ecs_task_definition.dialog_bot_task.arn
+#  }
+#}
+
+#resource "aws_cloudwatch_event_rule" "ecs_role" {
+#  name = "ecsEventsRole"
+
+#  assume_role_policy = jsonencode({
+#    Statement = [
+#      {
+#        Action = "sts:AssumeRole",
+#        Effect = "Allow",
+#        Principal = {
+#          Service = "events.amazonaws.com"
+#        },
+#      },
+#    ],
+#    Version = "2012-10-17"
+#  })
+#}
+
+#resource "aws_cloudwatch_event_permission" "permission_for_events" {
+#  statement_id  = "Allow-CloudWatch-Events"
+#  action        = "events:PutEvents"
+#  principal     = "events.amazonaws.com"
+#}

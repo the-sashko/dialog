@@ -23,9 +23,10 @@ class Handler:
     __CHANCE_TO_MODIFY_MARKOV_REPLY = 5
     __CHANCE_TO_REPLY_IN_PUBLIC_CHAT = 5
     __CHANCE_TO_REPLY_IN_AUDIO = 1
-    __CHANCE_TO_RANDOM_TEST = 1
+    __CHANCE_TO_REPLY_TO_AUDIO = 50
+    __CHANCE_TO_RANDOM_TEXT = 1
     __CHANCE_TO_RANDOM_VOICE = 1
-    __CHANCE_TO_RANDOM_IMAGE = 5
+    __CHANCE_TO_RANDOM_IMAGE = 1
 
     __telegram = None
     __markov = None
@@ -325,7 +326,7 @@ class Handler:
         if message.get_chat().is_private_type() or message.is_reply_to_me():
             return False
 
-        if message.get_voice() is not None:
+        if message.get_voice() is not None and self.__chance.get(self.__CHANCE_TO_REPLY_TO_AUDIO):
             return False
 
         pattern = r'^(.*?)' + re.escape(self.__bot_name) + r'(.*?)$'
@@ -373,7 +374,7 @@ class Handler:
         if self.__chance.get(self.__CHANCE_TO_RANDOM_VOICE):
             return self.__trigger.RANDOM_VOICE_TRIGGER
 
-        if self.__chance.get(self.__CHANCE_TO_RANDOM_TEST):
+        if self.__chance.get(self.__CHANCE_TO_RANDOM_TEXT):
             return self.__trigger.RANDOM_TEXT_TRIGGER
 
         return None
